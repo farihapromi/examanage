@@ -3,6 +3,7 @@ from django.db import models
 
 from django.contrib.auth.models import AbstractUser
 
+
 # Create your models here.
 
 class Department(models.Model):
@@ -11,6 +12,7 @@ class Department(models.Model):
 
       def __str__(self):
             return self.name
+
 
 class UserType(models.Model):
         TEACHER = 1
@@ -38,7 +40,7 @@ class Staff(AbstractUser):
     usertype = models.ManyToManyField(UserType)
 
     def __str__(self):
-          return self.username
+          return self.first_name+' '+self.last_name
 
 
 

@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .serializers import NoticePostSerializer, NoticeSerializer, NoticeQuesModSerializer, NoticeQuesModPostSerializer, ExamSystemSerializer
+from .serializers import NoticePostSerializer, NoticeSerializer, NoticeQuesModSerializer, NoticeQuesModPostSerializer, ExamSystemSerializer, CourseSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from .models import Notice, NoticeQuesMod, ExamSystem
+from .models import Notice, NoticeQuesMod, ExamSystem, Course, ThirdExaminerNotice, InvigilationSchedule
 
 # Create your views here.
 
@@ -47,5 +47,19 @@ def exam_system_list(request):
            serializer.save()
            return Response(serializer.data, status=status.HTTP_201_CREATED) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
+
+@api_view(['GET', 'POST'])
+def course_list(request):
+    if request.method == 'GET':
+        course = Course.objects.all()
+        serializer = CourseSerializer(course, many = True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = CourseSerializer(data = request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_201_CREATED) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

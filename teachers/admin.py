@@ -6,4 +6,3 @@ from .models import Staff, UserType, Department
 admin.site.register(Staff)
 admin.site.register(UserType)
 admin.site.register(Department)
-
