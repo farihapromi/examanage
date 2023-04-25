@@ -32,8 +32,11 @@ class UserType(models.Model):
               return self.get_id_display()
 
 class Staff(AbstractUser):
+    first_name_bangla = models.CharField(max_length=500)
+    last_name_bangla = models.CharField(max_length=500)
     email = models.CharField(max_length=100, unique=True ) 
     designation = models.CharField(max_length=100, blank = True)
+    address = models.CharField(max_length=500)
     contact = models.CharField(max_length=14, unique= True)
     university = models.CharField(max_length=100)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)

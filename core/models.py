@@ -107,6 +107,18 @@ class ExamResponsibility(models.Model):
 
     def __str__(self):
         return 'Exam Responsibility '+ self.exam_system.year+' year '+self.exam_system.semester+' sem'+self.exam_year
+    
+
+class ExamBill(models.Model):
+    examiner_bangla = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name = 'examiner_bangla')
+    examiner_english = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='examiner_english')
+    exam_year = models.CharField(max_length=20)
+    exam_system = models.ForeignKey(ExamSystem, on_delete=models.CASCADE, related_name='exam_system')
+    exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE, related_name='exam_responsibility')
+    chairman = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='chairman')
+
+    def __str__(self):
+        return 'Exam Bill '+self.exam_year+' '+self.exam_system.year+' year '+ self.exam_system.semester+' sem '+self.examiner_english.first_name +' '+self.examiner_english.last_name+' '
 
 
 
