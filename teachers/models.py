@@ -29,9 +29,11 @@ class UserType(models.Model):
         id = models.PositiveSmallIntegerField(choices= TYPE_CHOICES, primary_key=True)
 
         def __str__(self):
-              return self.get_id_display()
+              return self.TYPE_CHOICES
 
 class Staff(AbstractUser):
+    first_name = models.CharField(max_length=500)
+    last_name = models.CharField(max_length=500)
     first_name_bangla = models.CharField(max_length=500)
     last_name_bangla = models.CharField(max_length=500)
     email = models.CharField(max_length=100, unique=True ) 
