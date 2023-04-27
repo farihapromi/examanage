@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractUser
 
 class Department(models.Model):
       name = models.CharField(max_length=200)
-      shortcode = models.CharField(max_length=20)
+      shortcode = models.CharField(max_length=20, unique=True)
 
       def __str__(self):
             return self.name
@@ -19,6 +19,7 @@ class UserType(models.Model):
         CHAIRMAN = 2
         EXAM_COMMITTEE_CHAIRMAN = 3
         EXAM_COMMITTEE_MEMBER = 4
+        EXTERNAL = 5
         TYPE_CHOICES = (
             (TEACHER, 'Teacher'),
             (CHAIRMAN, 'Chairman'),
@@ -29,7 +30,7 @@ class UserType(models.Model):
         id = models.PositiveSmallIntegerField(choices= TYPE_CHOICES, primary_key=True)
 
         def __str__(self):
-              return self.TYPE_CHOICES
+              return self.get_id_display()
 
 class Staff(AbstractUser):
     first_name = models.CharField(max_length=500)

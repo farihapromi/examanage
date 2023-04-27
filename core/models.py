@@ -6,9 +6,13 @@ from teachers.models import Staff, Department
 
 
 class ExamSystem(models.Model):
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='department')
-    semester = models.CharField(max_length=10, blank=True)
+    department = models.ForeignKey(Department,to_field='shortcode', on_delete=models.CASCADE, related_name='department')
     year = models.CharField(max_length=10)
+    semester = models.CharField(max_length=10, blank=True)
+
+    class Meta:
+        unique_together = ('year', 'semester',)
+
 
     def __str__(self):
         if self.semester == '':
@@ -46,6 +50,13 @@ class NoticeQuesMod(models.Model):
 
     def __str__(self):
         return 'NoticeQuesmod '+self.exam_year+'' + self.exam_system.year +' year '+self.exam_system.semester + ' sem'
+
+
+class ModerationReport(models.Model):
+    presented_members = models.IntegerField()
+
+    def __str__(self):
+        pass
     
 
 class Course(models.Model):

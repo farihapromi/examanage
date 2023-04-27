@@ -5,6 +5,15 @@ urlpatterns = [
 path('noticelist/', views.notice_list, name='notice_list'),
 path('quesmodlist/', views.ques_mod_list, name='ques_mod_list'),
 path('examsystemlist/', views.exam_system_list, name='exam_system_list'),
-path('courselist/', views.course_list, name='course-list')
+path('courselist/', views.course_list, name='course_list'),
+path('thirdexaminernoticelist/', views.third_examiner_notice_list, name='third_examiner_notice_list'),
+path('labcourselist/', views.lab_course_list , name = 'lab_course_list'),
+path('examschedulelist/', views.exam_schedule_list , name = 'exam_schedule_list'),
+path('stencillist/', views.stencil_list , name = 'stencil_list'),
+path('exambilllist/', views.exam_bill_list , name = 'exam_bill_list'),
+path('examresponsibilitylist/', views.exam_responsibility_list , name = 'exam_responsibility_list'),
+path('invigilationlist', views.invigilation_schedule_list , name = 'invigilation_schedule_list'),
+path('tabulatorlist/', views.tabulator_list , name = 'tabulator_list'),
+
 
 ]

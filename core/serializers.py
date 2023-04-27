@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Notice, NoticeQuesMod, ExamSystem, Course, ThirdExaminerNotice, ExamSchedule, InvigilationSchedule
+from .models import Notice, NoticeQuesMod, ExamSystem, Course, ThirdExaminerNotice, ExamSchedule, InvigilationSchedule, LabCourse, ExamBill, ExamResponsibility, Stencil,Tabulator
 
 
 class NoticeSerializer(serializers.ModelSerializer):
@@ -29,16 +29,62 @@ class NoticeQuesModPostSerializer(serializers.ModelSerializer):
 
 
 class ExamSystemSerializer(serializers.ModelSerializer):  
-     department = serializers.StringRelatedField(many=False) 
+     #department = serializers.StringRelatedField(many=False) 
      class Meta:
           model = ExamSystem
-          fields = ['department','semester', 'year']
+          fields = ['id','department','semester', 'year']
 
 
 class CourseSerializer(serializers.ModelSerializer):
 
-     exam_system_course = serializers.StringRelatedField(many=True)
+     #exam_system_course = serializers.StringRelatedField(many=True)
 
      class Meta:
           model = Course
-          fields = ['exam_system_course','course_code', 'course_name']
+          #fields = ['exam_system_course','course_code', 'course_name']
+          fields = '__all__'
+
+class ThirdExaminerNoticeSerializer(serializers.ModelSerializer):
+     course = CourseSerializer(read_only = True, many = True)
+     staff = serializers.StringRelatedField(many=True)
+     exam_system = ExamSystemSerializer(read_only=True)
+     class Meta:
+          model = ThirdExaminerNotice
+          fields = ['memorial_no', 'exam_year', 'date', 'examinee_roll_no', 'exam_system', 'staff', 'course']
+
+class ExamScehduleSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = ExamSchedule
+          fields = '__all__'
+
+class InvigilationScheduleSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = InvigilationSchedule
+          fields = '__all__'
+
+class LabCourseSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = LabCourse
+          fields = '__all__'
+
+class ExamBillSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = ExamBill
+          fields = '__all__'
+
+class ExamResponsibilitySerializer(serializers.ModelSerializer):
+     class Meta:
+          model = ExamResponsibility
+          fields = '__all__'
+
+class StencilSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = Stencil
+          fields = '__all__'
+
+
+class TabulatorSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = Tabulator
+          fields = '__all__'
+
