@@ -4,8 +4,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from .models import Staff, Department, UserType
+from django.contrib.auth.decorators import permission_required
 
 # Create your views here.
+
+# role based views
+
+@permission_required('')
 
 @api_view(['GET','POST'])
 def teacher_list(request):

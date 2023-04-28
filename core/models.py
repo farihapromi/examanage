@@ -7,29 +7,35 @@ from teachers.models import Staff, Department
 
 class ExamSystem(models.Model):
     department = models.ForeignKey(Department,to_field='shortcode', on_delete=models.CASCADE, related_name='department')
-    year = models.CharField(max_length=10)
-    semester = models.CharField(max_length=10, blank=True)
-
-    class Meta:
-        unique_together = ('year', 'semester',)
+    year = models.CharField(max_length=10, unique=True)
 
 
     def __str__(self):
-        if self.semester == '':
-            return self.department.shortcode+' '+self.year+' year '
-        return self.department.shortcode+' '+self.year+' year '+ self.semester + ' sem'
+        return self.department.shortcode+' '+self.year+' year '
+      
+    
+
+class Semester(models.Model):
+    exam_system = models.ForeignKey(ExamSystem, to_field= 'year', on_delete=models.CASCADE)
+    semester = models.CharField(max_length=10)
+
+    class Meta:
+        unique_together = ('exam_system', 'semester')
+
+    def __str__(self):
+        return self.exam_system.department.shortcode+' '+self.exam_system.year+' year '+ self.semester + ' sem'
     
 
 class Notice(models.Model):
     #name = models.CharField(max_length=100)
     memorial_no = models.CharField(max_length=100)
-    exam_system = models.OneToOneField(ExamSystem, on_delete=models.CASCADE)
+    sem = models.OneToOneField(Semester, on_delete=models.CASCADE)
     exam_year = models.CharField(max_length=4)
     date = models.DateField(auto_now_add=True)
     #fk = models.ForeignKey(Staff, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return 'notice' + self.exam_system.year + ' year '+self.exam_system.semester + ' sem '+self.exam_year
+        return 'notice' + self.sem.exam_system.year + ' year '+self.sem.semester + ' sem '+self.exam_year
     
 
 
@@ -41,7 +47,7 @@ class NoticeQuesMod(models.Model):
     day = models.CharField(max_length=20)
     time = models.CharField(max_length=20)
     exam_year = models.CharField(max_length=10)
-    exam_system = models.OneToOneField(ExamSystem,on_delete=models.CASCADE)
+    sem = models.OneToOneField(Semester,on_delete=models.CASCADE)
 
 
     #committee_member_name = member_name()
@@ -49,7 +55,7 @@ class NoticeQuesMod(models.Model):
     #committee_member_department = member_department()
 
     def __str__(self):
-        return 'NoticeQuesmod '+self.exam_year+'' + self.exam_system.year +' year '+self.exam_system.semester + ' sem'
+        return 'NoticeQuesmod '+self.exam_year+'' + self.sem.exam_system.year +' year '+self.sem.semester + ' sem'
 
 
 class ModerationReport(models.Model):
@@ -60,7 +66,7 @@ class ModerationReport(models.Model):
     
 
 class Course(models.Model):
-    exam_system = models.ForeignKey(ExamSystem, on_delete=models.CASCADE, related_name='exam_system_course')
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE, related_name='semester_course')
     course_code = models.CharField(max_length=100)
     course_name = models.CharField(max_length=200)
     
@@ -106,7 +112,7 @@ class ThirdExaminerNotice(Notice):
     examinee_roll_no = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
-        return 'তৃতীয়_পরীক্ষক_নিয়োগ'+self.exam_year + ' '+ self.exam_system.year+' year '+ self.exam_system.semester+' sem'
+        return 'তৃতীয়_পরীক্ষক_নিয়োগ'+self.exam_year 
     
 
 class Tabulator(models.Model):
@@ -122,7 +128,7 @@ class Stencil(models.Model):
 
 class ExamResponsibility(models.Model):
     exam_year = models.CharField(max_length=20)
-    exam_system = models.OneToOneField(ExamSystem, on_delete=models.CASCADE)
+    sem = models.OneToOneField(Semester, on_delete=models.CASCADE)
     question_no = models.IntegerField()
     notice_ques_mod = models.ManyToManyField(NoticeQuesMod)
     staff_stencil = models.OneToOneField(Staff, on_delete=models.CASCADE, related_name='staff_stencil')
@@ -138,19 +144,19 @@ class ExamResponsibility(models.Model):
 
 
     def __str__(self):
-        return 'Exam Responsibility '+ self.exam_system.year+' year '+self.exam_system.semester+' sem'+self.exam_year
+        return 'Exam Responsibility '+ self.sem.exam_system.year+' year '+self.sem.semester+' sem'+self.exam_year
     
 
 class ExamBill(models.Model):
     examiner_bangla = models.OneToOneField(Staff,on_delete=models.CASCADE, related_name='examiner_bangla')
     examiner_english = models.OneToOneField(Staff,on_delete=models.CASCADE, related_name='examiner_english')
     exam_year = models.CharField(max_length=20)
-    exam_system = models.ForeignKey(ExamSystem, on_delete=models.CASCADE, related_name='exam_system')
+    sem = models.ForeignKey(Semester, on_delete=models.CASCADE, related_name='sem')
     exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE, related_name='exam_responsibility')
     chairman = models.OneToOneField(Staff,on_delete=models.CASCADE, related_name='exam_committee_chairman')
 
     def __str__(self):
-        return 'Exam Bill '+self.exam_year+' '+self.exam_system.year+' year '+ self.exam_system.semester+' sem '+self.examiner_english.first_name +' '+self.examiner_english.last_name+' '
+        return 'Exam Bill '+self.exam_year+' '+self.sem.exam_system.year+' year '+ self.sem.semester+' sem '+self.examiner_english.first_name +' '+self.examiner_english.last_name+' '
 
 
 
