@@ -1,17 +1,56 @@
 from django.db import models
 from teachers.models import Staff, Department
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
 
 
 class ExamSystem(models.Model):
-    department = models.ForeignKey(Department,to_field='shortcode', on_delete=models.CASCADE, related_name='department')
+    department = models.ForeignKey(
+        Department,
+        to_field='shortcode', 
+        on_delete=models.CASCADE, 
+        related_name='department')
     year = models.CharField(max_length=10, unique=True)
+    committee_members = models.ManyToManyField(
+        Staff,
+        through='ExamCommittee',
+        related_name='committee_member'
+    )
 
 
     def __str__(self):
         return self.department.shortcode+' '+self.year+' year '
+
+
+class ExamCommittee(models.Model):
+    ROLE_CHOICES = [
+        ('chairman', 'Chairman'),
+        ('member', 'Member'),
+    ]
+    exam_system = models.ForeignKey(ExamSystem, on_delete=models.CASCADE)
+    staff_member = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    exam_year = models.CharField(max_length=10)
+
+    class Meta:
+        unique_together = ('exam_system', 'staff_member', 'exam_year')
+
+
+    def clean(self):
+        # Check if the maximum number of committee members have already been assigned
+        committee_members = ExamCommittee.objects.filter(exam_system=self.exam_system, exam_year=self.exam_year)
+        num_chairmen = len([c for c in committee_members if c.role == 'chairman'])
+        num_members = len([c for c in committee_members if c.role == 'member'])
+        if self.role == 'chairman' and num_chairmen >= 1:
+            raise ValidationError('An exam committee can only have one chairman')
+        elif self.role == 'member' and num_members >= 2:
+            raise ValidationError('An exam committee can have at most two members')
+
+
+    def __str__(self):
+        return 'Exam Committee'+ self.exam_year+'_'+self.exam_system.year+' year '
       
     
 

@@ -4,7 +4,7 @@ from teachers.models import Staff
 
 # Create your models here.
 
-
+"""
 class ExamCommittee(models.Model):
       exam_system = models.ForeignKey(ExamSystem, to_field='year' , on_delete=models.CASCADE)
       chairman = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='chairman')
@@ -17,3 +17,6 @@ class ExamCommittee(models.Model):
 
       def __str__(self):
             return 'Exam Committee '+self.exam_year+ self.exam_system.year + ' year '
+      
+
+"""
