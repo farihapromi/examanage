@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Staff, UserType, Department
+from .models import Staff, Department
 
 # Register your models here.
 
@@ -8,7 +8,7 @@ from .models import Staff, UserType, Department
 
 
 #admin.site.register(Staff, StaffAdmin)
-admin.site.register(UserType)
+#admin.site.register(UserType)
 admin.site.register(Department)
 admin.site.register(Staff)
 

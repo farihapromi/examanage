@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .serializers import StaffSerializer, StaffPostSerializer, DepartmentSerializer, DepartmentPostSerializer, UserTypeSerializer
+from .serializers import StaffSerializer, StaffPostSerializer, DepartmentSerializer, DepartmentPostSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from .models import Staff, Department, UserType
+from .models import Staff, Department
 from django.contrib.auth.decorators import permission_required
 
 # Create your views here.
