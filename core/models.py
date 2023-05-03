@@ -96,7 +96,7 @@ Related models:
     def __str__(self):
         return self.course_code
     
-
+# Create course_chief model 
 
 
 class Notice(models.Model):
@@ -163,7 +163,7 @@ class CourseExaminer(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     full_marks = models.IntegerField()
     duration = models.CharField(max_length=20)
-    examiner = models.ManyToManyField(Staff, through='Examiner', related_name='examiners')
+    examiners = models.ManyToManyField(Staff, through='Examiner', related_name='examiners')
 
     def __str__(self):
         return f"{self.course.course_code} - {self.examiner_list.sem} - {self.full_marks}"
@@ -189,7 +189,7 @@ class Examiner(models.Model):
     Staff: Model representing a staff member of the university.
     
     """
-    course = models.ForeignKey(CourseExaminer, on_delete=models.CASCADE)
+    course_examiner = models.ForeignKey(CourseExaminer, on_delete=models.CASCADE)
     order = models.CharField(max_length=5)
     examiner = models.ForeignKey(Staff, on_delete=models.CASCADE)
 
@@ -270,19 +270,10 @@ class Invigilator(models.Model):
         return 'Invigilator_exam_' +self.invigilation.course.course_code +'_'+ self.invigilator.first_name+'_'+self.invigilator.last_name   
 
 
-class ThirdExaminer(models.Model):
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    examinee_roll = models.CharField(max_length=500, blank=True)
 
-    def __str__(self):
-        return 
 
     
 class ThirdExaminerNotice(Notice):
-    memorial_no = models.CharField(max_length=300)
-    date = models.DateField(auto_now_add=True)
-    exam_year = models.CharField(max_length=4)
     examiner = models.ManyToManyField(Staff, through='ThirdExaminer', related_name='third_examiner')
 
     def __str__(self):
@@ -290,7 +281,14 @@ class ThirdExaminerNotice(Notice):
     
 
 
+class ThirdExaminer(models.Model):
+    notice = models.ForeignKey(ThirdExaminerNotice, on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    examinee_roll = models.CharField(max_length=500, blank=True)
 
+    def __str__(self):
+        return 
 
 
 class ExamResponsibility(models.Model):
@@ -314,15 +312,15 @@ class ExamResponsibility(models.Model):
         return 'Exam Responsibility '+ self.sem.exam_system.year+' year '+self.sem.semester+' sem'+self.exam_year
     
 
-# class Tabulator(models.Model):
-#     exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
-#     tabulator = models.OneToOneField(Staff,on_delete=models.CASCADE)
-#     examinee_no = models.IntegerField()
+class Tabulator(models.Model):
+    exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
+    tabulator = models.OneToOneField(Staff,on_delete=models.CASCADE)
+    examinee_no = models.IntegerField()
 
-# class Stencil(models.Model):
-#     exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
-#     staff = models.OneToOneField(Staff, on_delete=models.CASCADE)
-#     stencil_no = models.IntegerField()
+class Stencil(models.Model):
+    exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
+    staff = models.OneToOneField(Staff, on_delete=models.CASCADE)
+    stencil_no = models.IntegerField()
 
 
 class ExamBill(models.Model):

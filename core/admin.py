@@ -16,6 +16,19 @@ admin.site.register(InvigilationSchedule)
 admin.site.register(ExamResponsibility)
 admin.site.register(ExamBill)
 admin.site.register(LabCourse)
+admin.site.register(CourseChief)
+admin.site.register(ThirdExaminer)
+admin.site.register(Tabulator)
+admin.site.register(Stencil)
+admin.site.register(Examiner)
+admin.site.register(ExaminerList)
+admin.site.register(CourseExaminer)
+admin.site.register(ModerationReport)
+# admin.site.register()
+# admin.site.register()
+# admin.site.register()
+# admin.site.register()
+
 
 
 

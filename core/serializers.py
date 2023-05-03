@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Notice, NoticeQuesMod, ExamSystem, Course, ThirdExaminerNotice, ExamSchedule, InvigilationSchedule, LabCourse, ExamBill, ExamResponsibility, Stencil,Tabulator
+from .models import Notice, NoticeQuesMod, ExamSystem, Course, ThirdExaminerNotice, ExamSchedule, InvigilationSchedule, LabCourse, ExamBill, ExamResponsibility, Stencil, Tabulator
 
 
 class NoticeSerializer(serializers.ModelSerializer):
