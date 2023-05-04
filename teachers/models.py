@@ -12,6 +12,7 @@ from django.contrib.auth.models import AbstractUser
 class Department(models.Model):
       name = models.CharField(max_length=200)
       shortcode = models.CharField(max_length=20, unique=True)
+      shortcode_bangla = models.CharField(max_length=50, unique=True)
 
       def __str__(self):
             return self.name
@@ -36,22 +37,36 @@ class UserType(models.Model):
               return self.get_id_display()
 '''
 class Staff(AbstractUser):
-    first_name = models.CharField(max_length=500)
-    last_name = models.CharField(max_length=500)
-    first_name_bangla = models.CharField(max_length=500)
-    last_name_bangla = models.CharField(max_length=500)
-    email = models.EmailField(unique=True ) 
-    designation = models.CharField(max_length=100, blank = True)
-    address = models.CharField(max_length=500)
-    contact = models.CharField(max_length=14, unique= True)
-    university = models.CharField(max_length=100)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
-    is_department_chairman = models.BooleanField(default=False)
-    is_external = models.BooleanField(default=False)
-    #usertype = models.ManyToManyField(UserType)
+     GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+        )
+     first_name = models.CharField(max_length=500)
+     middle_name = models.CharField(max_length=500, blank= True)
+     last_name = models.CharField(max_length=500, blank=True)
+     first_name_in_bangla = models.CharField(max_length=500)
+     middle_name_in_bangla = models.CharField(max_length=500, blank= True)
+     last_name_in_bangla = models.CharField(max_length=500, blank=True)
+     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+     email = models.EmailField(unique=True ) 
+     designation = models.CharField(max_length=100, blank = True)
+     designation_in_bangla = models.CharField(max_length=100, blank = True)
+     address = models.CharField(max_length=500)
+     address_in_bangla = models.CharField(max_length=500)
+     contact = models.CharField(max_length=14, unique= True)
+     university = models.CharField(max_length=100)
+     shortcode_of_university_in_bangla = models.CharField(max_length=100, blank=True)
+     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
+     is_department_chairman = models.BooleanField(default=False, unique=True)
+     is_external = models.BooleanField(default=False)
+     #usertype = models.ManyToManyField(UserType)
 
-    def __str__(self):
-          return self.first_name+' '+self.last_name
+     def __str__(self):
+         if self.designation.lower() == 'professor':
+            return f"Prof. {self.first_name} {self.last_name}"
+         else:
+            return f"{self.first_name} {self.last_name}"
     
 
 

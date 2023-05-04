@@ -4,7 +4,7 @@ from .models import *
 # Register your models here.
 
 admin.site.register(Notice)
-admin.site.register(NoticeQuesMod)
+admin.site.register(NoticeQuestionModeration)
 admin.site.register(ExamSystem)
 admin.site.register(ExamCommittee)
 admin.site.register(Semester)
@@ -24,8 +24,8 @@ admin.site.register(Examiner)
 admin.site.register(ExaminerList)
 admin.site.register(CourseExaminer)
 admin.site.register(ModerationReport)
-# admin.site.register()
-# admin.site.register()
+admin.site.register(LabExamInvigilationSchedule)
+# admin.site.register
 # admin.site.register()
 # admin.site.register()
 
