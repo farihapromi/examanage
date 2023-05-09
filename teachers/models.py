@@ -1,13 +1,14 @@
 
 from django.db import models
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 
 
 # Create your models here.
 
 
 
+# chair_group = Group.objects.get(name='Department Chairman')
 
 class Department(models.Model):
       name = models.CharField(max_length=200)
@@ -58,15 +59,31 @@ class Staff(AbstractUser):
      university = models.CharField(max_length=100)
      shortcode_of_university_in_bangla = models.CharField(max_length=100, blank=True)
      department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
-     is_department_chairman = models.BooleanField(default=False, unique=True)
+     is_department_chairman = models.BooleanField(default=False)
      is_external = models.BooleanField(default=False)
      #usertype = models.ManyToManyField(UserType)
+
+     class Meta:
+         unique_together = ('department', 'is_department_chairman')
 
      def __str__(self):
          if self.designation.lower() == 'professor':
             return f"Prof. {self.first_name} {self.last_name}"
          else:
             return f"{self.first_name} {self.last_name}"
+         
+   #   def save(self, *args, **kwargs):
+   #      is_new = not self.pk  # check if this is a new object being created
+
+   #      # call the original save method to create/update the object in the database
+   #      super().save(*args, **kwargs)
+
+   #      # check if this is a new staff member and if they are a department chairman
+   #      if is_new and self.is_department_chairman:
+   #          self.groups.add(chair_group)
+         
+
+# staff = Staff.objects.create_user(email = 'john@gmail.com',password='123',first_name='john',department
     
 
 

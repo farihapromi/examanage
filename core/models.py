@@ -209,14 +209,23 @@ class Examiner(models.Model):
         unique_together = ('order', 'examiner',)
 
 
+class ModerationReport(models.Model):
+    sem = models.OneToOneField(Semester, on_delete=models.CASCADE)
+    moderation_committee = models.ManyToManyField(Staff, through='NoticeQuestionModerationMembers' ,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Moderation report '+self.sem.exam_system.year+' year '+self.sem.semester+' semester'
+    
+
+
 class NoticeQuestionModeration(models.Model):
     
     external_examiner = models.OneToOneField(Staff, 
                                             on_delete=models.CASCADE, 
                                             limit_choices_to={'is_external': True},
                                             related_name='external_examiner')
-    exam_committee_members = models.ManyToManyField(ExamCommittee, 
-                                                    through='NoticeQuestionModerationCommitteeMembers')
+    exam_committee = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE)
+                                                    
     date = models.DateField()
     day = models.CharField(max_length=20)
     time = models.CharField(max_length=20)
@@ -229,24 +238,16 @@ class NoticeQuestionModeration(models.Model):
         return 'NoticeQuesmod '+self.exam_year+'' + self.sem.exam_system.year +' year '+self.sem.semester + ' sem'
     
 
-class NoticeQuestionModerationCommitteeMembers(models.Model):
-    exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
-    notice_question_moderation = models.ForeignKey(NoticeQuestionModeration, on_delete=models.CASCADE)
-    members = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE, limit_choices_to={'role': 'member'})
+# class NoticeQuestionModerationCommitteeMembers(models.Model):
+#     # exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
+#     notice_question_moderation = models.ForeignKey(NoticeQuestionModeration, on_delete=models.CASCADE)
+#     members = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE, limit_choices_to={'role': 'member'})
 
 
-    def __str__(self):
-        return 'Question Moderation_Exam Committee members' + self.members.exam_year
+#     def __str__(self):
+#         return 'Question Moderation_Exam Committee members' + self.members.exam_year
 
 
-
-
-class ModerationReport(models.Model):
-    presented_members = models.IntegerField()
-
-    def __str__(self):
-        pass
-    
 
 
 # REdundant model
@@ -289,12 +290,7 @@ class InvigilationSchedule(ExamSchedule):
 
     
 
-class Invigilator(models.Model):
-    invigilation = models.ForeignKey(InvigilationSchedule, on_delete=models.CASCADE)
-    invigilator = models.ForeignKey(Staff, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return 'Invigilator_exam_' +self.invigilation.course.course_code +'_'+ self.invigilator.first_name+'_'+self.invigilator.last_name   
 
 
 class LabExamInvigilationSchedule(InvigilationSchedule):
@@ -330,7 +326,7 @@ class ExamResponsibility(models.Model):
     exam_year = models.CharField(max_length=20)
     sem = models.OneToOneField(Semester, on_delete=models.CASCADE)
     question_no = models.IntegerField()
-    notice_ques_mod = models.ManyToManyField(NoticeQuestionModeration, through='NoticeQuestionModerationCommitteeMembers')
+    # notice_ques_mod = models.ManyToManyField(NoticeQuestionModeration, through='NoticeQuestionModerationCommitteeMembers')
     staff_stencil = models.ManyToManyField(Staff,through='Stencil', related_name='staff_stencil')
     tabulators = models.ManyToManyField(Staff, through='Tabulator', related_name= 'tabulators')
    
@@ -346,9 +342,18 @@ class ExamResponsibility(models.Model):
     def __str__(self):
         return 'Exam Responsibility '+ self.sem.exam_system.year+' year '+self.sem.semester+' sem'+self.exam_year
     
+class Invigilator(models.Model):
+    lab_exam = models.ForeignKey(LabExamInvigilationSchedule, on_delete=models.CASCADE, related_name='lab_exam_invigilation')
+    exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
+    invigilation = models.ForeignKey(InvigilationSchedule, on_delete=models.CASCADE, related_name='invigilationa_schedule')
+    invigilator = models.ForeignKey(Staff, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Invigilator_exam_' +self.invigilation.course.course_code +'_'+ self.invigilator.first_name+'_'+self.invigilator.last_name   
+    
 
 class NoticeQuestionModerationCommitteeMembers(models.Model):
-    exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
+    # exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
     notice_question_moderation = models.ForeignKey(NoticeQuestionModeration, on_delete=models.CASCADE)
     members = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE, limit_choices_to={'role': 'member'})
 
@@ -359,7 +364,7 @@ class NoticeQuestionModerationCommitteeMembers(models.Model):
 
 class Tabulator(models.Model):
     exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
-    tabulator = models.OneToOneField(Staff,on_delete=models.CASCADE)
+    tabulator = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE, limit_choices_to={'role': 'member'})
     examinee_no = models.IntegerField()
 
 class Stencil(models.Model):

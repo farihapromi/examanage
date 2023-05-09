@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Notice, NoticeQuesMod, ExamSystem, Course, ThirdExaminerNotice, ExamSchedule, InvigilationSchedule, LabCourse, ExamBill, ExamResponsibility, Stencil, Tabulator
+from .models import Notice, NoticeQuestionModeration,NoticeQuestionModerationCommitteeMembers, ExamSystem, Course, ThirdExaminerNotice, ExamSchedule, InvigilationSchedule, LabCourse, ExamBill, ExamResponsibility, Stencil, Tabulator
 
 
 class NoticeSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class NoticePostSerializer(serializers.ModelSerializer):
 
 class NoticeQuesModSerializer(serializers.ModelSerializer):
      class Meta:
-          model = NoticeQuesMod
+          model = NoticeQuestionModeration
           fields = '__all__'
 
 class NoticeQuesModPostSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class NoticeQuesModPostSerializer(serializers.ModelSerializer):
      staff = serializers.StringRelatedField( many = True, read_only=True)
 
      class Meta:
-          model = NoticeQuesMod
+          model = NoticeQuestionModeration
           fields = ['date', 'day','time', 'exam_year', 'semester', 'year','staff']
 
 
