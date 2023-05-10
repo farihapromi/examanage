@@ -63,8 +63,8 @@ class Staff(AbstractUser):
      is_external = models.BooleanField(default=False)
      #usertype = models.ManyToManyField(UserType)
 
-     class Meta:
-         unique_together = ('department', 'is_department_chairman')
+   #   class Meta:
+   #       unique_together = ('department', 'is_department_chairman')
 
      def __str__(self):
          if self.designation.lower() == 'professor':
