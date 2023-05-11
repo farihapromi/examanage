@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'teachers',
     'examcommitte',
     'rest_framework',
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

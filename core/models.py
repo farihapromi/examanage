@@ -7,12 +7,25 @@ from django.core.exceptions import ValidationError
 
 
 class ExamSystem(models.Model):
+    YEAR_CHOICES = (
+        ('1st','1st'),
+        ('2nd','2nd'),
+        ('3rd','3rd'),
+        ('4th','4th'),
+    )
+    YEAR_CHOICES_in_BENGALI = (
+        ('১ম','১ম'),
+        ('২য়','২য়'),
+        ('৩য়','৩য়'),
+        ('৪র্থ','৪র্থ'),
+    )
     department = models.ForeignKey(
         Department,
         to_field='shortcode', 
         on_delete=models.CASCADE, 
         related_name='department')
-    year = models.CharField(max_length=10, unique=True)
+    year = models.CharField(max_length=10, choices=YEAR_CHOICES)
+    year_in_bengali = models.CharField(max_length=4, choices=YEAR_CHOICES_in_BENGALI)
     committee_members = models.ManyToManyField(
         Staff,
         through='ExamCommittee',
@@ -55,8 +68,17 @@ class ExamCommittee(models.Model):
     
 
 class Semester(models.Model):
-    exam_system = models.ForeignKey(ExamSystem, to_field= 'year', on_delete=models.CASCADE)
-    semester = models.CharField(max_length=10)
+    SEMESTER_CHOICES = (
+        ('1st','1st'),
+        ('2nd','2nd'),
+    )
+    SEMESTER_CHOICES_IN_BENGALI = (
+        ('১ম','১ম'),
+        ('২য়','২য়'),
+    )
+    exam_system = models.ForeignKey(ExamSystem, on_delete=models.CASCADE)
+    semester = models.CharField(max_length=5, choices=SEMESTER_CHOICES)
+    semester_in_bengali = models.CharField(max_length=5, choices=SEMESTER_CHOICES_IN_BENGALI)
 
     class Meta:
         unique_together = ('exam_system', 'semester')
@@ -223,35 +245,53 @@ class NoticeQuestionModeration(models.Model):
     day = models.CharField(max_length=20)
     time = models.CharField(max_length=20)
     exam_year = models.CharField(max_length=10)
-    sem = models.OneToOneField(Semester,
+    sem = models.ForeignKey(Semester,
                                on_delete=models.CASCADE)
 
 
     def __str__(self):
         return 'NoticeQuesmod '+self.exam_year+'' + self.sem.exam_system.year +' year '+self.sem.semester + ' sem'
-    
+
 
 class ExamSchedule(models.Model):
     sem = models.ForeignKey(Semester, on_delete=models.CASCADE)
     date_generation = models.DateField(auto_now_add=True)
     exam_year = models.CharField(max_length=10)  
-    exam_date = models.DateField()
-    course = models.OneToOneField(Course,on_delete=models.CASCADE, limit_choices_to={'semester': sem})
-    time = models.CharField(max_length=50)
-    
+    course_schedule = models.ManyToManyField(Course, through='CourseSchedule')
     def __str__(self):
-        return 'ExamSchedule'+self.exam_year +' '+self.course.course_code+self.sem.exam_system.year +' year '+self.sem.semester + ' sem'
+        return 'ExamSchedule '+self.exam_year +' '+self.sem.exam_system.year +' year '+self.sem.semester + ' sem'
+
+
+class CourseSchedule(models.Model):
+    exam_schedule = models.ForeignKey(ExamSchedule, on_delete=models.CASCADE)
+    exam_date = models.DateField()
+    course_code = models.ForeignKey(Course,on_delete=models.CASCADE)
+    time = models.CharField(max_length=50)
+
+    def __str__(self):
+        return ' CourseSchedule for '
+
+# class ExamSchedule(models.Model):
+#     sem = models.ForeignKey(Semester, on_delete=models.CASCADE)
+#     date_generation = models.DateField(auto_now_add=True)
+#     exam_year = models.CharField(max_length=10)  
+#     exam_date = models.DateField()
+#     course = models.OneToOneField(Course,on_delete=models.CASCADE, limit_choices_to={'semester': sem})
+#     time = models.CharField(max_length=50)
+    
+#     def __str__(self):
+#         return 'ExamSchedule'+self.exam_year +' '+self.course.course_code+self.sem.exam_system.year +' year '+self.sem.semester + ' sem'
     
     
 class ModerationReport(models.Model):
-    exam_schedule = models.ForeignKey(ExamSchedule, on_delete=models.CASCADE)
+    notice_question_moderation = models.ForeignKey(NoticeQuestionModeration, on_delete=models.CASCADE)
     # notice_question_moderation = models.OneToOneField(NoticeQuestionModeration ,on_delete=models.CASCADE)
     # present_members = models.ManyToManyField(Staff, through='QuestionModMember')
     present_members = models.ManyToManyField(Staff)
 
 
     def __str__(self):
-        return 'Moderation report '+self.exam_schedule.sem.exam_system.year+' year '+self.exam_schedule.sem.semester+' semester'   
+        return 'Moderation report '+self.notice_question_moderation.sem.exam_system.year+' year '+self.notice_question_moderation.sem.semester+' semester'   
 
 # class QuestionModMember(models.Model):
 #     moderation_report = models.ForeignKey(ModerationReport, on_delete=models.CASCADE)
@@ -297,7 +337,7 @@ class InvigilationSchedule(ExamSchedule):
     invigilators = models.ManyToManyField(Staff, through='Invigilator', related_name='invigilators')
     
     def __str__(self):
-        return 'InvigilationSchedule'+super().exam_year + ' '+super().course.course_code
+        return 'InvigilationSchedule'+super().exam_year
     
 
     
