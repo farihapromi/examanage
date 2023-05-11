@@ -50,18 +50,18 @@ def teacher_detail(request, id):
    
 
 
-@api_view(['GET','POST'])
-def usertype_list(request):
-   if request.method == 'GET':
-      usertype = UserType.objects.all()
-      serializer = UserTypeSerializer(usertype, many = True)
-      return Response(serializer.data)
-   if request.method == 'POST':
-      serializer = UserTypeSerializer(data = request.data)
-      if serializer.is_valid():
-         serializer.save()
-         return Response(serializer.data, status=status.HTTP_201_CREATED) 
-      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['GET','POST'])
+# def usertype_list(request):
+#    if request.method == 'GET':
+#       usertype = UserType.objects.all()
+#       serializer = UserTypeSerializer(usertype, many = True)
+#       return Response(serializer.data)
+#    if request.method == 'POST':
+#       serializer = UserTypeSerializer(data = request.data)
+#       if serializer.is_valid():
+#          serializer.save()
+#          return Response(serializer.data, status=status.HTTP_201_CREATED) 
+#       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
    
 
 

@@ -26,7 +26,7 @@ admin.site.register(CourseExaminer)
 admin.site.register(ModerationReport)
 admin.site.register(LabExamInvigilationSchedule)
 # admin.site.register
-# admin.site.register()
+admin.site.register(CourseSchedule)
 # admin.site.register()
 
 

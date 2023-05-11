@@ -1,7 +1,24 @@
 from rest_framework import serializers
-from .models import Notice, NoticeQuestionModeration,NoticeQuestionModerationCommitteeMembers, ExamSystem, Course, ThirdExaminerNotice, ExamSchedule, InvigilationSchedule, LabCourse, ExamBill, ExamResponsibility, Stencil, Tabulator
+from .models import *
 
 
+class ExamSystemSerializer(serializers.ModelSerializer):  
+     #department = serializers.StringRelatedField(many=False) 
+     class Meta:
+          model = ExamSystem
+          fields = '__all__'
+
+class SemesterSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = Semester
+          fields = '__all__'
+
+class SemesterDetailSerializer(serializers.ModelSerializer):
+     exam_system = ExamSystemSerializer()
+     class Meta:
+          model = Semester
+          fields = '__all__'
+     
 class NoticeSerializer(serializers.ModelSerializer):
     class Meta:
           model = Notice
@@ -28,11 +45,7 @@ class NoticeQuesModPostSerializer(serializers.ModelSerializer):
           fields = ['date', 'day','time', 'exam_year', 'semester', 'year','staff']
 
 
-class ExamSystemSerializer(serializers.ModelSerializer):  
-     #department = serializers.StringRelatedField(many=False) 
-     class Meta:
-          model = ExamSystem
-          fields = ['id','department','semester', 'year']
+
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -44,6 +57,40 @@ class CourseSerializer(serializers.ModelSerializer):
           #fields = ['exam_system_course','course_code', 'course_name']
           fields = '__all__'
 
+class ExamScheduleSerializer(serializers.ModelSerializer):
+
+     class Meta:
+          model = ExamSchedule
+          #fields = ['exam_system_course','course_code', 'course_name']
+          fields = '__all__'
+
+class ExamScheduleDetailSerializer(serializers.ModelSerializer):
+     sem = SemesterDetailSerializer()
+     class Meta:
+          model = ExamSchedule
+          #fields = ['exam_system_course','course_code', 'course_name']
+          fields = '__all__'
+
+class CourseScheduleSerializer(serializers.ModelSerializer):
+
+     #exam_system_course = serializers.StringRelatedField(many=True)
+
+     class Meta:
+          model = CourseSchedule
+          #fields = ['exam_system_course','course_code', 'course_name']
+          fields = '__all__'
+
+          
+
+class CourseScheduleDetailSerializer(serializers.ModelSerializer):
+     exam_schedule = ExamScheduleSerializer()
+     course_code = CourseSerializer()
+
+     class Meta:
+          model = CourseSchedule
+          #fields = ['exam_system_course','course_code', 'course_name']
+          fields = '__all__'
+
 class ThirdExaminerNoticeSerializer(serializers.ModelSerializer):
      course = CourseSerializer(read_only = True, many = True)
      staff = serializers.StringRelatedField(many=True)
@@ -52,10 +99,10 @@ class ThirdExaminerNoticeSerializer(serializers.ModelSerializer):
           model = ThirdExaminerNotice
           fields = ['memorial_no', 'exam_year', 'date', 'examinee_roll_no', 'exam_system', 'staff', 'course']
 
-class ExamScehduleSerializer(serializers.ModelSerializer):
-     class Meta:
-          model = ExamSchedule
-          fields = '__all__'
+# class ExamScehduleSerializer(serializers.ModelSerializer):
+#      class Meta:
+#           model = ExamSchedule
+#           fields = '__all__'
 
 class InvigilationScheduleSerializer(serializers.ModelSerializer):
      class Meta:

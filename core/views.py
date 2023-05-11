@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from .models import *
+from django.http import JsonResponse
+from rest_framework import generics
+
 
 # Create your views here.
 
@@ -24,7 +27,7 @@ def notice_list(request):
 @api_view(['GET', 'POST'])
 def ques_mod_list(request):
     if request.method == 'GET':
-        notice = NoticeQuesMod.objects.all()
+        notice = NoticeQuestionModeration.objects.all()
         serializer = NoticeQuesModSerializer(notice, many = True)
         return Response(serializer.data)
     if request.method == 'POST':
@@ -98,14 +101,48 @@ def lab_course_list(request):
 def exam_schedule_list(request):
     if request.method == 'GET':
         exam_schedule = ExamSchedule.objects.all()
-        serializer = ExamScehduleSerializer(exam_schedule, many = True)
+        serializer = ExamScheduleSerializer(exam_schedule, many = True)
         return Response(serializer.data)
     if request.method == 'POST':
-        serializer = ExamScehduleSerializer(data = request.data)
+        serializer = ExamScheduleSerializer(data = request.data)
         if serializer.is_valid():
            serializer.save()
            return Response(serializer.data, status=status.HTTP_201_CREATED) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET', 'POST'])
+def exam_schedule_detail(request):
+    if request.method == 'GET':
+        exam_schedule = ExamSchedule.objects.all()
+        serializer = ExamScheduleDetailSerializer(exam_schedule, many=True)
+        return Response(serializer.data)
+
+
+#course schedule
+@api_view(['GET', 'POST'])
+def course_schedule_list(request):
+    if request.method == 'GET':
+        course_schedule = CourseSchedule.objects.all()
+        serializer = CourseScheduleSerializer(course_schedule, many = True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = CourseScheduleSerializer(data = request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_201_CREATED) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def course_schedule_detail(request, id):
+    try:
+      course_schedule = CourseSchedule.objects.get(pk=id)
+    except CourseSchedule.DoesNotExist:
+      return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        course_schedule = CourseSchedule.objects.get(pk=id)
+        serializer = CourseScheduleDetailSerializer(course_schedule)
+        return Response(serializer.data)  
     
 @api_view(['GET', 'POST'])
 def invigilation_schedule_list(request):
@@ -176,3 +213,22 @@ def exam_bill_list(request):
            serializer.save()
            return Response(serializer.data, status=status.HTTP_201_CREATED) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+# def course_schedule_options(request, schedule_id):
+#     course_schedules = CourseSchedule.objects.filter(exam_schedule=schedule_id)
+#     data = []
+#     for schedule in course_schedules:
+#         data.append({
+#             'id': schedule.id,
+#             'label': schedule.course_code.code + ' - ' + str(schedule.exam_date) + ' - ' + schedule.time,
+#         })
+#     return JsonResponse({'data': data})
+
+
+class CourseScheduleList(generics.ListAPIView):
+    serializer_class = CourseScheduleDetailSerializer
+
+    def get_queryset(self):
+        exam_schedule_id = self.kwargs['exam_schedule_id']
+        return CourseSchedule.objects.filter(exam_schedule_id=exam_schedule_id)
