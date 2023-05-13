@@ -100,3 +100,61 @@ def department_detail(request, id):
       department.delete()
       return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+#login view
+from django.contrib.auth import authenticate, login,logout
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import StaffLoginForm
+
+@login_required(login_url='login')
+def home(request):
+    return render(request, 'home.html')
+
+def login_view(request):
+    if request.method == 'POST':
+        form = StaffLoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            staff = authenticate(request, username=username, password=password)
+            if staff is not None and staff.is_active and staff.is_department_chairman:
+                login(request, staff)
+                return redirect('home')
+            else:
+                error = 'Invalid login credentials or you are not authorized to login'
+                return render(request, 'login.html', {'form': form, 'error': error})
+    else:
+        form = StaffLoginForm()
+    return render(request, 'login.html', {'form': form})
+
+
+
+# @login_required(login_url='login')
+
+# def HomePage(request):
+#     return render(request,'home.html')
+
+# def login_view(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         staff = authenticate(request, username=username, password=password)
+#         if staff is not None and staff.is_active and staff.is_department_chairman:
+#             print(staff)
+#             login(request, staff)
+#             return redirect('home')
+#         else:
+#             error = 'Invalid login credentials or you are not authorized to login'
+#             return render(request, 'login.html', {'error': error})
+#     return render(request, 'login.html')
+
+def deptcse_view(request):
+    return render(request, 'deptcse.html')
+
+# def LogoutPage(request):
+#     logout(request)
+#     return redirect('login')
+
+
+

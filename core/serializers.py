@@ -104,10 +104,17 @@ class ThirdExaminerNoticeSerializer(serializers.ModelSerializer):
 #           model = ExamSchedule
 #           fields = '__all__'
 
-class InvigilationScheduleSerializer(serializers.ModelSerializer):
-     class Meta:
-          model = InvigilationSchedule
-          fields = '__all__'
+# class InvigilationScheduleSerializer(serializers.ModelSerializer):
+#      class Meta:
+#           model = InvigilationSchedule
+#           fields = '__all__'
+
+# class InvigilationScheduleCreateSerializer(serializers.ModelSerializer):
+#      sem = SemesterDetailSerializer()
+     
+#      class Meta:
+#           model = InvigilationSchedule
+#           fields = '__all__'
 
 class LabCourseSerializer(serializers.ModelSerializer):
      class Meta:
