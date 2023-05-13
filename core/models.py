@@ -26,29 +26,27 @@ class ExamSystem(models.Model):
         related_name='department')
     year = models.CharField(max_length=10, choices=YEAR_CHOICES)
     year_in_bengali = models.CharField(max_length=4, choices=YEAR_CHOICES_in_BENGALI)
-    committee_members = models.ManyToManyField(
-        Staff,
-        through='ExamCommittee',
-        related_name='committee_member'
-    )
+    # committee_members = models.ManyToManyField(
+    #     Staff,
+    #     through='ExamCommittee',
+    #     related_name='committee_member'
+    # )
 
+    class Meta:
+        unique_together = ('year', 'year_in_bengali')
 
     def __str__(self):
         return self.department.shortcode+' '+self.year+' year '
 
 
 class ExamCommittee(models.Model):
-    ROLE_CHOICES = [
-        ('chairman', 'Chairman'),
-        ('member', 'Member'),
-    ]
+   
     exam_system = models.ForeignKey(ExamSystem, on_delete=models.CASCADE)
-    staff_member = models.ForeignKey(Staff, on_delete=models.CASCADE)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    exam_committee_member = models.ManyToManyField(Staff, through='ExamCommitteeMember')
     exam_year = models.CharField(max_length=10)
 
     class Meta:
-        unique_together = ('exam_system', 'staff_member', 'exam_year')
+        unique_together = ('exam_system','exam_year')
 
 
     def clean(self):
@@ -65,7 +63,19 @@ class ExamCommittee(models.Model):
     def __str__(self):
         return 'Exam Committee'+ self.exam_year+'_'+self.exam_system.year+' year '
       
-    
+class ExamCommitteeMember(models.Model):
+     ROLE_CHOICES = [
+        ('chairman', 'Chairman'),
+        ('member', 'Member'),
+        ('external', 'External')
+    ]
+     exam_committee = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE)
+     committee_members = models.ForeignKey(Staff, on_delete=models.CASCADE) 
+     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+
+     def __str__(self):
+         return self.role+' of Exam Committee'+ self.exam_committee.exam_system.year+' year '+ self.exam_committee.exam_year
+
 
 class Semester(models.Model):
     SEMESTER_CHOICES = (
@@ -234,20 +244,12 @@ class Examiner(models.Model):
 
 
 class NoticeQuestionModeration(models.Model):
-    
-    external_examiner = models.OneToOneField(Staff, 
-                                            on_delete=models.CASCADE, 
-                                            limit_choices_to={'is_external': True},
-                                            related_name='external_examiner')
-    exam_committee = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE)
-                                                    
+    exam_committee = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE)       
     date = models.DateField()
     day = models.CharField(max_length=20)
     time = models.CharField(max_length=20)
     exam_year = models.CharField(max_length=10)
-    sem = models.ForeignKey(Semester,
-                               on_delete=models.CASCADE)
-
+    sem = models.ForeignKey(Semester,on_delete=models.CASCADE)
 
     def __str__(self):
         return 'NoticeQuesmod '+self.exam_year+'' + self.sem.exam_system.year +' year '+self.sem.semester + ' sem'
@@ -269,7 +271,7 @@ class CourseSchedule(models.Model):
     time = models.CharField(max_length=50)
 
     def __str__(self):
-        return ' CourseSchedule for '
+        return ' CourseSchedule for '+self.exam_schedule.sem.exam_system.year+' year '+self.exam_schedule.sem.semester+' semester '
 
 # class ExamSchedule(models.Model):
 #     sem = models.ForeignKey(Semester, on_delete=models.CASCADE)
