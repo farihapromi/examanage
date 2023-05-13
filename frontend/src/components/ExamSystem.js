@@ -54,7 +54,7 @@ function ExamSystem() {
 
     useEffect(() => {
         // Fetch the list of courses from your backend API
-        axios.get("http://127.0.0.1:8000/core/courses/",{
+        axios.get("http://127.0.0.1:8000/core/courseschedule/",{
             headers: {
                 'Authorization': `Basic ${btoa(`${username}:${password}`)}`
               }

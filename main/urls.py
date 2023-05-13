@@ -15,6 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from teachers import views
+from django.views.generic.base import TemplateView # new
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,4 +25,12 @@ urlpatterns = [
     path('teachers/', include('teachers.urls')),
     path('', include('teachers.urls')),
     path('core/', include('core.urls')),
+    # path('signup/',views.SignupPage,name="signup"),
+    path('login/',views.login_view, name="login"),
+    path('home/',views.home, name="home"),
+    path('home/templates/deptcse/',views.deptcse_view,name="dept-cse"),
+    path('', TemplateView.as_view(template_name='myhome.html'), name='myhome'), # ne
+    path('teachers/mylogin/',include('django.contrib.auth.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    # path('logout/',views.LogoutPage,name='logout'),
 ]

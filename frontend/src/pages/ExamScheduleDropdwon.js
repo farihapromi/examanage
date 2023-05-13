@@ -24,6 +24,7 @@ function ExamScheduleDropdown() {
 
     return (
         <div>
+            <h1>Department of Computer Science</h1>
             <select value={selectedExamScheduleId} onChange={handleSelectExamSchedule}>
                 <option value="">Select an exam schedule</option>
                 {examSchedules.map(examSchedule => (
@@ -44,7 +45,8 @@ function ExamScheduleDropdown() {
                 <tbody>
                     {courseSchedules.map(courseSchedule => (
                         <tr key={courseSchedule.id}>
-                            <td>{courseSchedule.exam_date}</td>
+                            {/* <td>{courseSchedule.exam_date}</td> */}
+                            <td>{new Date(courseSchedule.exam_date).toLocaleDateString('en-GB')}</td>
                             <td>{courseSchedule.course_code.course_code}</td>
                             <td>{courseSchedule.course_code.course_name}</td>
                             <td>{courseSchedule.time}</td>

@@ -111,25 +111,31 @@ Related models:
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE, related_name='semester_course')
     course_code = models.CharField(max_length=100, unique=True)
     course_name = models.CharField(max_length=200, unique=True)
-    course_chief = models.ManyToManyField(Staff, through='CourseChief', related_name='course_chief')
+    # course_chief = models.ManyToManyField(Staff, through='CourseChief', related_name='course_chief')
     
 
 
     def __str__(self):
         return self.course_code
     
-# Create course_chief model 
-
-class CourseChief(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    chief = models.ForeignKey(Staff, on_delete=models.CASCADE)
-    exam_year = models.CharField(max_length=4)
-
-    class Meta:
-        unique_together = ('course', 'exam_year',)
+class LabCourse(Course):
+    credit = models.IntegerField()
 
     def __str__(self):
-        return self.course.course_code + '_chief_'+ self.chief.first_name+' '+self.chief.last_name
+        return self.course_code
+    
+# Create course_chief model 
+
+# class CourseChief(models.Model):
+#     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+#     chief = models.ForeignKey(Staff, on_delete=models.CASCADE)
+#     exam_year = models.CharField(max_length=4)
+
+#     class Meta:
+#         unique_together = ('course', 'exam_year',)
+
+#     def __str__(self):
+#         return self.course.course_code + '_chief_'+ self.chief.first_name+' '+self.chief.last_name
 
 
 class Notice(models.Model):
@@ -143,7 +149,7 @@ class Notice(models.Model):
         date (date): The date the notice was created.
     """
     memorial_no = models.CharField(max_length=100)
-    sem = models.OneToOneField(Semester, on_delete=models.CASCADE)
+    sem = models.ForeignKey(Semester, on_delete=models.CASCADE)
     exam_year = models.CharField(max_length=4)
     date = models.DateField(auto_now_add=True)
     #fk = models.ForeignKey(Staff, on_delete=models.SET_NULL)
@@ -175,7 +181,7 @@ Fields:
     course = models.ManyToManyField(Course, through='CourseExaminer', related_name='course_examiner_list')
 
     def __str__(self):
-        return f"Examiner list for {self.sem.exam_system.year} year {self.sem} semester ({self.course.count()} courses)"
+        return f"Examiner list for {self.sem} ({self.course.count()} courses)"
 
 
 class CourseExaminer(models.Model):
@@ -267,22 +273,59 @@ class CourseSchedule(models.Model):
     exam_date = models.DateField()
     course_code = models.ForeignKey(Course,on_delete=models.CASCADE)
     time = models.CharField(max_length=50)
+    invigilator = models.ManyToManyField(Staff, through='Invigilator', related_name='course_invigilator')
 
     def __str__(self):
-        return ' CourseSchedule for '
+        return ' CourseSchedule for '+ self.course_code.course_code+' '+self.exam_schedule.exam_year
 
-# class ExamSchedule(models.Model):
-#     sem = models.ForeignKey(Semester, on_delete=models.CASCADE)
-#     date_generation = models.DateField(auto_now_add=True)
-#     exam_year = models.CharField(max_length=10)  
-#     exam_date = models.DateField()
-#     course = models.OneToOneField(Course,on_delete=models.CASCADE, limit_choices_to={'semester': sem})
-#     time = models.CharField(max_length=50)
+  
+class Invigilator(models.Model):
+    course_schedule = models.ForeignKey(CourseSchedule, on_delete=models.CASCADE, related_name='course')
+    # chief = models.ForeignKey(CourseChief, on_delete=models.CASCADE)
+    invigilator= models.ForeignKey(Staff, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Invigilator '+self.course_schedule.course_code.course_code+' '+self.course_schedule.exam_schedule.sem.exam_system.year + ' year ' +self.course_schedule.exam_schedule.sem.semester+ ' semester '+self.course_schedule.exam_schedule.exam_year
+
+
+
+class LabExamInvigilationSchedule(ExamSchedule):
+    ROLL_CHOICES = (
+        ('O', 'Odd Roll'),
+        ('E', 'Even Roll'),
+    )
+    roll_type = models.CharField(max_length=1, choices= ROLL_CHOICES)
+    lab_course_schedule = models.ManyToManyField(LabCourse, through='LabCourseSchedule')
+
+
+    def __str__(self):
+        return 'LabExam Invigilation Schedule'+ self.exam_year+' '+self.sem.exam_system.year+' year'+self.sem.semester+' sem'
+
+
+class LabCourseSchedule(models.Model):
+    lab_exam_schedule = models.ForeignKey(LabExamInvigilationSchedule, on_delete=models.CASCADE)
+    exam_date = models.DateField()
+    course_code = models.ForeignKey(LabCourse,on_delete=models.CASCADE)
+    time = models.CharField(max_length=50)
+    invigilator = models.ManyToManyField(Staff, through='LabExamInvigilator', related_name='lab_course_invigilator')
+
+    def __str__(self):
+        return ' Lab Course Schedule for '+ self.course_code.course_code+' '+self.lab_exam_schedule.exam_year
+
     
-#     def __str__(self):
-#         return 'ExamSchedule'+self.exam_year +' '+self.course.course_code+self.sem.exam_system.year +' year '+self.sem.semester + ' sem'
-    
-    
+class LabExamInvigilator(models.Model):
+    lab_course_schedule = models.ForeignKey(LabCourseSchedule, on_delete=models.CASCADE, related_name='course')
+    # chief = models.ForeignKey(CourseChief, on_delete=models.CASCADE)
+    invigilator= models.ForeignKey(Staff, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Lab Exam Invigilator '+self.lab_course_schedule.course_code.course_code+' '+self.lab_course_schedule.lab_exam_schedule.sem.exam_system.year + ' year ' +self.lab_course_schedule.lab_exam_schedule.sem.semester+ ' semester '+self.lab_course_schedule.lab_exam_schedule.exam_year
+
+
+
+
+
+
 class ModerationReport(models.Model):
     notice_question_moderation = models.ForeignKey(NoticeQuestionModeration, on_delete=models.CASCADE)
     # notice_question_moderation = models.OneToOneField(NoticeQuestionModeration ,on_delete=models.CASCADE)
@@ -322,45 +365,38 @@ class ModerationReport(models.Model):
 #         return self.course.course_code + '_chief_'+ self.chief.first_name+' '+self.chief.last_name
     
 
-class LabCourse(Course):
-    credit = models.IntegerField()
 
-    def __str__(self):
-        return self.course_code
+  
 
+
+# class InvigilationSchedule(ExamSchedule):
+#     # course_chief = models.ForeignKey(CourseChief, on_delete=models.CASCADE, related_name='chief')
+#     invigilators = models.ManyToManyField(Staff, through='Invigilator', related_name='invigilators')
+    
+#     def __str__(self):
+#         return 'InvigilationSchedule'+super().exam_year
+    
+
+# class Invigilator(models.Model):
+#     # lab_exam = models.ForeignKey(LabExamInvigilationSchedule, on_delete=models.CASCADE, related_name='lab_exam_invigilation')
+#     # exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
+#     invigilation = models.ForeignKey(InvigilationSchedule, on_delete=models.CASCADE, related_name='invigilationa_schedule')
+#     invigilator = models.ForeignKey(Staff, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return 'Invigilator_exam_'+self.invigilation.exam_year +'_'+ self.invigilator.first_name+'_'+self.invigilator.last_name   
     
 
 
 
 
-class InvigilationSchedule(ExamSchedule):
-    invigilators = models.ManyToManyField(Staff, through='Invigilator', related_name='invigilators')
-    
-    def __str__(self):
-        return 'InvigilationSchedule'+super().exam_year
-    
-
-    
-
-
-
-
-class LabExamInvigilationSchedule(InvigilationSchedule):
-    ROLL_CHOICES = (
-        ('O', 'Odd Roll'),
-        ('E', 'Even Roll'),
-    )
-    roll_type = models.CharField(max_length=1, choices= ROLL_CHOICES)
-
-    def __str__(self):
-        return 'LabExam Invigilation Schedule'+ self.exam_year+' '+self.sem.exam_system.year+' year'+self.sem.semester+' sem'
 
     
 class ThirdExaminerNotice(Notice):
     examiner = models.ManyToManyField(Staff, through='ThirdExaminer', related_name='third_examiner')
 
     def __str__(self):
-        return 'তৃতীয়_পরীক্ষক_নিয়োগ'+self.exam_year 
+        return 'তৃতীয়_পরীক্ষক_নিয়োগ '+self.exam_year 
     
 
 
@@ -371,7 +407,7 @@ class ThirdExaminer(models.Model):
     examinee_roll = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
-        return 'Third_Examiner_List'+ self.notice.exam_year
+        return 'Third_Examiner_List'+ self.notice.exam_year 
     
 class Tabulator(models.Model):
     # exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
@@ -387,11 +423,11 @@ class ExamResponsibility(models.Model):
     staff_stencil = models.ManyToManyField(Staff,through='Stencil', related_name='staff_stencil')
     tabulators = models.ForeignKey(Tabulator, on_delete=models.CASCADE,related_name= 'tabulators')
    
-    lab_exam_invigilator = models.ManyToManyField(LabExamInvigilationSchedule, through='Invigilator')
+    # lab_exam_invigilator = models.ManyToManyField(LabExamInvigilationSchedule, through='Invigilator')
     examinee_no_viva = models.IntegerField()
     #chairman and members of exam committee in viva voce
     course_lab_tutorial = models.ManyToManyField(LabCourse, related_name='course_lab_tutorial')
-    credit_lab_tutorial = models.ManyToManyField(LabCourse, related_name='credit_lab_tutorial')
+    # credit_lab_tutorial = models.ManyToManyField(LabCourse, related_name='credit_lab_tutorial')
     staff_lab_tutorial = models.ManyToManyField(Staff)
     student_no_lab_tutorial = models.IntegerField()
 
@@ -399,24 +435,24 @@ class ExamResponsibility(models.Model):
     def __str__(self):
         return 'Exam Responsibility '+ self.sem.exam_system.year+' year '+self.sem.semester+' sem'+self.exam_year
     
-class Invigilator(models.Model):
-    lab_exam = models.ForeignKey(LabExamInvigilationSchedule, on_delete=models.CASCADE, related_name='lab_exam_invigilation')
-    exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
-    invigilation = models.ForeignKey(InvigilationSchedule, on_delete=models.CASCADE, related_name='invigilationa_schedule')
-    invigilator = models.ForeignKey(Staff, on_delete=models.CASCADE)
+# class Invigilator(models.Model):
+#     lab_exam = models.ForeignKey(LabExamInvigilationSchedule, on_delete=models.CASCADE, related_name='lab_exam_invigilation')
+#     exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
+#     invigilation = models.ForeignKey(InvigilationSchedule, on_delete=models.CASCADE, related_name='invigilationa_schedule')
+#     invigilator = models.ForeignKey(Staff, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return 'Invigilator_exam_' +self.invigilation.course.course_code +'_'+ self.invigilator.first_name+'_'+self.invigilator.last_name   
+#     def __str__(self):
+#         return 'Invigilator_exam_' +self.invigilation.course.course_code +'_'+ self.invigilator.first_name+'_'+self.invigilator.last_name   
     
 
-class NoticeQuestionModerationCommitteeMembers(models.Model):
-    # exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
-    notice_question_moderation = models.ForeignKey(NoticeQuestionModeration, on_delete=models.CASCADE)
-    members = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE, limit_choices_to={'role': 'member'})
+# class NoticeQuestionModerationCommitteeMembers(models.Model):
+#     # exam_responsibility = models.ForeignKey(ExamResponsibility, on_delete=models.CASCADE)
+#     notice_question_moderation = models.ForeignKey(NoticeQuestionModeration, on_delete=models.CASCADE)
+#     members = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE, limit_choices_to={'role': 'member'})
 
 
-    def __str__(self):
-        return 'Question Moderation_Exam Committee members' + self.members.exam_year
+#     def __str__(self):
+#         return 'Question Moderation_Exam Committee members' + self.members.exam_year
     
 
 
