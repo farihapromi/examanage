@@ -105,28 +105,36 @@ def department_detail(request, id):
 from django.contrib.auth import authenticate, login,logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import StaffLoginForm
+# from .forms import StaffLoginForm
 
-@login_required(login_url='login')
-def home(request):
-    return render(request, 'home.html')
+# def home(request):
+   #  return render(request, 'home.html')
 
-def login_view(request):
-    if request.method == 'POST':
-        form = StaffLoginForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            staff = authenticate(request, username=username, password=password)
-            if staff is not None and staff.is_active and staff.is_department_chairman:
-                login(request, staff)
-                return redirect('home')
-            else:
-                error = 'Invalid login credentials or you are not authorized to login'
-                return render(request, 'login.html', {'form': form, 'error': error})
-    else:
-        form = StaffLoginForm()
-    return render(request, 'login.html', {'form': form})
+# def login_view(request):
+#     if request.method == 'POST':
+#         form = StaffLoginForm(request, data=request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
+#             staff = authenticate(request, username=username, password=password)
+#             if staff is not None and staff.is_active and staff.is_department_chairman:
+#                 login(request, staff)
+#                 return redirect('home')
+#             else:
+#                 error = 'Invalid login credentials or you are not authorized to login'
+#                 return render(request, 'login.html', {'form': form, 'error': error})
+#     else:
+#         form = StaffLoginForm()
+#     return render(request, 'login.html', {'form': form})
+
+
+#custom authentication by promi
+# from django.contrib.auth.views import LoginView
+# from teachers.forms import CustomAuthenticationForm
+
+# class CustomLoginView(LoginView):
+#     authentication_form = CustomAuthenticationForm
+#     template_name = 'login.html'
 
 
 
@@ -149,6 +157,38 @@ def login_view(request):
 #             return render(request, 'login.html', {'error': error})
 #     return render(request, 'login.html')
 
+
+@login_required
+
+def redirect_home(request):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('admin')
+        elif request.user.is_department_chairman:
+            return redirect('chairman')
+        else:
+            return redirect('user-home')
+    else:
+        return redirect('login')
+    
+def admin(request):
+    return render(request, 'admin.html')
+
+@login_required
+def chairman(request):
+    return render(request, 'chairman.html')
+
+def dashboard(request):
+    if request.user.is_superuser:
+        # Redirect to admin page
+        return redirect('admin')
+    elif request.user.is_department_chairman:
+        # Redirect to chairman page
+        return redirect('chairman')
+    else:
+        # Redirect to default user page
+        return redirect('user')
+
 def deptcse_view(request):
     return render(request, 'deptcse.html')
 
@@ -158,3 +198,15 @@ def deptcse_view(request):
 
 
 
+from django.shortcuts import render, redirect
+from .forms import UserAdminCreationForm
+
+
+def register(req):
+    form = UserAdminCreationForm()
+    if req.method == 'POST':
+        form = UserAdminCreationForm(req.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('register')
+    return render(req, 'register.html', {'form': form})
