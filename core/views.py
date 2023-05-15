@@ -232,6 +232,96 @@ class CourseScheduleList(generics.ListAPIView):
     def get_queryset(self):
         exam_schedule_id = self.kwargs['exam_schedule_id']
         return CourseSchedule.objects.filter(exam_schedule_id=exam_schedule_id)
+     
+
+     #examshceudle my edit
+
+class ExamScheduleDetailView(generics.RetrieveAPIView):
+      queryset = ExamSchedule.objects.all()
+      serializer_class = ExamScheduleDetailSerializer
+    
+
+    # def retrieve(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     serializer = self.get_serializer(instance)
+    #     data = serializer.data
+
+    #       # Include course schedule data with invigilator data
+    #     course_schedule_data = []
+    #     for course_schedule in instance.coursescheduledetail_set.all():
+    #         course_schedule_serializer = CourseScheduleSerializer(course_schedule)
+    #         course_schedule_data.append(course_schedule_serializer.data)
+
+    #         # Include invigilator data
+    #         invigilator_data = []
+    #         for invigilator in course_schedule.invigilator.all():
+    #             invigilator_data.append({
+    #                 'id': invigilator.id,
+    #                 'first_name': invigilator.first_name,
+    #                 'last_name': invigilator.last_name,
+    #                 # include any other relevant invigilator fields
+    #             })
+
+    #         course_schedule_data[-1]['invigilator'] = invigilator_data
+        
+    #     data['course_schedule'] = course_schedule_data
+    #     return Response(data)
+    
+
+
+
+# @api_view(['GET'])
+# def course_invigilator_schedule(request):
+#     if request.method == 'GET':
+#         invigilator_schedule = Invigilator.objects.all()
+#         serializer = InvigilationScheduleSerializer(invigilator_schedule, many = True)
+#         return Response(serializer.data)
+# class InvigilationScheduleList(generics.ListAPIView):
+    # serializer_class = InvigilationScheduleSerializer
+    # def get_queryset(self):
+    #     course_schedule_id = self.kwargs['course_schedule_id']
+    #     return Invigilator.objects.filter(course_schedule_id=course_schedule_id)
+    
+
+
+#my add
+# class CourseScheduleDetailView(generics.RetrieveAPIView):
+#     queryset = CourseSchedule.objects.all()
+#     serializer_class = CourseScheduleSerializer
+
+#     def retrieve(self, request, *args, **kwargs):
+#         instance = self.get_object()
+#         serializer = self.get_serializer(instance)
+#         data = serializer.data
+        
+#         # Include invigilator data
+#         invigilator_data = []
+#         for invigilator in instance.invigilator.all():
+#             invigilator_data.append({
+#                 'id': invigilator.id,
+#                 'first_name': invigilator.first_name,
+#                 'last_name': invigilator.last_name,
+#                 # include any other relevant invigilator fields
+#             })
+        
+#         data['invigilator'] = invigilator_data
+#         return Response(data)
+
+
+
+#my eidiotnn
+# @api_view(['GET'])
+# def exam_schedule_invigilators(request, exam_schedule_id):
+#     course_schedules = CourseSchedule.objects.filter(exam_schedule_id=exam_schedule_id)
+#     invigilators = {}
+#     for course_schedule in course_schedules:
+#         invigilator_list = []
+#         for invigilation_schedule in course_schedule.invigilation_schedule.all():
+#             invigilator_list.append(str(invigilation_schedule.invigilator))
+#         invigilators[course_schedule.id] = invigilator_list
+#     return Response(invigilators)
+
+
 
 
 #login signup

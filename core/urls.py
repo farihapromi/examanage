@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+# from .views import ExamScheduleDetailView
 
 urlpatterns = [
 path('noticelist/', views.notice_list, name='notice_list'),
@@ -18,7 +19,9 @@ path('tabulatorlist/', views.tabulator_list , name = 'tabulator_list'),
 path('courseschedule/',views.course_schedule_list,name='course_schedule_list'),
 path('coursescheduledetail/<int:id>',views.course_schedule_detail,name='course_schedule_detail'),
 path('examscheduledetail/<int:exam_schedule_id>/coursescheduledetail/', views.CourseScheduleList.as_view()),
-
-
+# path('invigilationschedule/',views.InvigilationScheduleList.as_view(),name='invigilationschedule')
+# path('invigilationschedule/<int:course_schedule_id>/', views.InvigilationScheduleList.as_view()),
+#path('examschedules/', views.ExamScheduleDetailView.as_view(), name='exam_schedule_detail'),
+ #path('examschedules/<int:exam_schedule_id>/coursescheduledetail/', views.ExamScheduleDetailView.as_view(), name='exam_schedule_detail'),
 
 ]

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from teachers.serializers import *
 
 
 class ExamSystemSerializer(serializers.ModelSerializer):  
@@ -66,30 +67,42 @@ class ExamScheduleSerializer(serializers.ModelSerializer):
 
 class ExamScheduleDetailSerializer(serializers.ModelSerializer):
      sem = SemesterDetailSerializer()
+     #my edition
+     # course_schedule = CourseScheduleSerializer(many=True, source='courses')
      class Meta:
           model = ExamSchedule
           #fields = ['exam_system_course','course_code', 'course_name']
           fields = '__all__'
 
 class CourseScheduleSerializer(serializers.ModelSerializer):
+      #my chnage
+     invigilators = serializers.StringRelatedField(many=True, source='invigilation_schedule.invigilator')
+
 
      #exam_system_course = serializers.StringRelatedField(many=True)
 
      class Meta:
           model = CourseSchedule
+          #my add
+          # = ['id', 'exam_date', 'course_code', 'time', 'invigilators']
+
           #fields = ['exam_system_course','course_code', 'course_name']
           fields = '__all__'
 
-          
+
 
 class CourseScheduleDetailSerializer(serializers.ModelSerializer):
      exam_schedule = ExamScheduleSerializer()
      course_code = CourseSerializer()
+     invigilator = StaffSerializer(many=True)
 
      class Meta:
           model = CourseSchedule
           #fields = ['exam_system_course','course_code', 'course_name']
           fields = '__all__'
+
+
+   
 
 class ThirdExaminerNoticeSerializer(serializers.ModelSerializer):
      course = CourseSerializer(read_only = True, many = True)
@@ -104,10 +117,7 @@ class ThirdExaminerNoticeSerializer(serializers.ModelSerializer):
 #           model = ExamSchedule
 #           fields = '__all__'
 
-# class InvigilationScheduleSerializer(serializers.ModelSerializer):
-#      class Meta:
-#           model = InvigilationSchedule
-#           fields = '__all__'
+
 
 # class InvigilationScheduleCreateSerializer(serializers.ModelSerializer):
 #      sem = SemesterDetailSerializer()

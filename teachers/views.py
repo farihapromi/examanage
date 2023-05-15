@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from .models import Staff, Department
+from core.models import ExamCommitteeMember
 from django.contrib.auth.decorators import permission_required
 
 # Create your views here.
@@ -166,6 +167,9 @@ def redirect_home(request):
             return redirect('admin')
         elif request.user.is_department_chairman:
             return redirect('chairman')
+        elif ExamCommitteeMember.objects.filter(committee_members=request.user, role='chairman').exists():
+            return redirect('teacher')
+            #   return redirect('teacher')
         else:
             return redirect('user-home')
     else:
@@ -173,6 +177,9 @@ def redirect_home(request):
     
 def admin(request):
     return render(request, 'admin.html')
+
+def teacher(request):
+   return render(request,'teacher.html')
 
 @login_required
 def chairman(request):

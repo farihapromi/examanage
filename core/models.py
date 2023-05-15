@@ -49,15 +49,15 @@ class ExamCommittee(models.Model):
         unique_together = ('exam_system','exam_year')
 
 
-    def clean(self):
-        # Check if the maximum number of committee members have already been assigned
-        committee_members = ExamCommittee.objects.filter(exam_system=self.exam_system, exam_year=self.exam_year)
-        num_chairmen = len([c for c in committee_members if c.role == 'chairman'])
-        num_members = len([c for c in committee_members if c.role == 'member'])
-        if self.role == 'chairman' and num_chairmen >= 1:
-            raise ValidationError('An exam committee can only have one chairman')
-        elif self.role == 'member' and num_members >= 2:
-            raise ValidationError('An exam committee can have at most two members')
+    # def clean(self):
+    #     # Check if the maximum number of committee members have already been assigned
+    #     committee_members = ExamCommittee.objects.filter(exam_system=self.exam_system, exam_year=self.exam_year)
+    #     num_chairmen = len([c for c in committee_members if c.role == 'chairman'])
+    #     num_members = len([c for c in committee_members if c.role == 'member'])
+    #     if self.role == 'chairman' and num_chairmen >= 1:
+    #         raise ValidationError('An exam committee can only have one chairman')
+    #     elif self.role == 'member' and num_members >= 2:
+    #         raise ValidationError('An exam committee can have at most two members')
 
 
     def __str__(self):
@@ -270,6 +270,12 @@ class ExamSchedule(models.Model):
         return 'ExamSchedule '+self.exam_year +' '+self.sem.exam_system.year +' year '+self.sem.semester + ' sem'
 
 
+
+#my eidiotn
+
+
+
+
 class CourseSchedule(models.Model):
     exam_schedule = models.ForeignKey(ExamSchedule, on_delete=models.CASCADE)
     exam_date = models.DateField()
@@ -279,6 +285,27 @@ class CourseSchedule(models.Model):
 
     def __str__(self):
         return ' CourseSchedule for '+ self.course_code.course_code+' '+self.exam_schedule.exam_year
+
+
+
+
+    
+    @property
+    def invigilator_names(self):
+        return ', '.join([invigilator.first_name + ' ' + invigilator.last_name for invigilator in self.invigilator.all()])
+
+# class InvigilationScheduleSerializer(serializers.ModelSerializer):
+#     course_schedule = CourseScheduleDetailSerializer()
+#     invigilator_names = serializers.ReadOnlyField(source='course_schedule.invigilator_names')
+
+#     class Meta:
+#         model = Invigilator
+#         fields = '__all__'
+
+
+
+
+
 
 class Invigilator(models.Model):
     # lab_exam = models.ForeignKey(LabExamInvigilationSchedule, on_delete=models.CASCADE, related_name='lab_exam_invigilation')

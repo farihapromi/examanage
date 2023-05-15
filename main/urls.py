@@ -31,6 +31,7 @@ urlpatterns = [
     # path('home/',views.home, name="home"),
     path('home/admin/',views.admin,name='admin'),
     path('home/chairman/',views.chairman,name='chairman'),
+      path('home/teacher/',views.teacher,name='teacher'),
     # path('home/templates/deptcse/',views.deptcse_view,name="dept-cse"),
     # path('home/', TemplateView.as_view(template_name='myhome.html'), name='myhome'), # ne
     # path('teachers/mylogin/',include('django.contrib.auth.urls')),

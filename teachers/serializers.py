@@ -14,7 +14,7 @@ class DepartmentPostSerializer(serializers.ModelSerializer):
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
-        fields = ['id', 'first_name', 'last_name','email', 'department', 'designation', 'university', 'contact', 'usertype']
+        fields = [ 'first_name', 'last_name','email', 'department', 'designation', 'university']
 
 class StaffPostSerializer(serializers.ModelSerializer):
     class Meta:
