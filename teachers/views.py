@@ -180,10 +180,16 @@ def admin(request):
 
 def teacher(request):
    return render(request,'teacher.html')
+def examsystem(request):
+   return render(request,'examsystem.html')
+
 
 @login_required
 def chairman(request):
     return render(request, 'chairman.html')
+def examcommitee(request):
+   return render(request,'examcommitee.html')
+
 
 def dashboard(request):
     if request.user.is_superuser:

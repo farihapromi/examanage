@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from pathlib import Path, os
+from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,6 +35,8 @@ INSTALLED_APPS = [
     'core',
     'teachers',
     'corsheaders',
+     'react_frontend',
+    # 'react_frontendrest_framework',
     
     'rest_framework',
     'django.contrib.admin',
@@ -66,7 +69,10 @@ ROOT_URLCONF = 'main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':  [os.path.join(BASE_DIR, 'templates')],
+        'DIRS':  [
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR,'frontend/build')
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,6 +87,9 @@ TEMPLATES = [
 
 # LOGIN_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'redirect-home'
+
+
+
 
 
 WSGI_APPLICATION = 'main.wsgi.application'
@@ -131,8 +140,35 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
 
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     #os.path.join(BASE_DIR, 'frontend', 'src', 'static')
+#     os.path.join(BASE_DIR, 'frontend', 'build', 'static')
+# ]
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'frontend/build/static'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# STATICFILES_DIRS=[
+#     os.path.join(BASE_DIR,'frontend/build/static')
+# ]
+#my ediiton
+
+# STATICFILES_FINDERS = [
+#     'django.contrib.staticfiles.finders.FileSystemFinder',
+#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#     'webpack_loader.finders.WebpackFinder',
+# ]
+
+# WEBPACK_LOADER = {
+#     'DEFAULT': {
+#         'BUNDLE_DIR_NAME': 'react/',
+#         'STATS_FILE': os.path.join(BASE_DIR, 'frontend', 'build', 'webpack-stats.json'),
+#     }
+# }
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 

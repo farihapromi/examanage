@@ -18,24 +18,31 @@ from django.urls import path,include
 from teachers import views
 from django.views.generic.base import TemplateView # new
 # from teachers.views import CustomLoginView
+from .views import *
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('teachers/', include('django.contrib.auth.urls')),
     path('teachers/', include('teachers.urls')),
-    path('', include('teachers.urls')),
+    # path('', include('teachers.urls')),
     path('core/', include('core.urls')),
     # path('signup/',views.SignupPage,name="signup"),
     # path('login/',views.login_view, name="login"),
     # path('home/',views.home, name="home"),
     path('home/admin/',views.admin,name='admin'),
     path('home/chairman/',views.chairman,name='chairman'),
-      path('home/teacher/',views.teacher,name='teacher'),
+    path('home/chairman/examcommitee/',views.examcommitee,name='examcommitee'),
+    path('home/teacher/',views.teacher,name='teacher'),
     # path('home/templates/deptcse/',views.deptcse_view,name="dept-cse"),
     # path('home/', TemplateView.as_view(template_name='myhome.html'), name='myhome'), # ne
     # path('teachers/mylogin/',include('django.contrib.auth.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     #  path('login/', CustomLoginView.as_view(), name='login'),
     # path('logout/',views.LogoutPage,name='logout'),
+    path('index/',index,name='index'),
+    path('react/',react_page,name='react'),
+    path('', include('react_frontend.urls'))
+    
 ]

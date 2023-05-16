@@ -42,7 +42,7 @@ class ExamSystem(models.Model):
 class ExamCommittee(models.Model):
    
     exam_system = models.ForeignKey(ExamSystem, on_delete=models.CASCADE)
-    exam_committee_member = models.ManyToManyField(Staff, through='ExamCommitteeMember')
+    exam_committee_member = models.ManyToManyField(Staff, through='ExamCommitteeMember', related_name='exam_committee_member')
     exam_year = models.CharField(max_length=10)
 
     class Meta:
@@ -70,7 +70,7 @@ class ExamCommitteeMember(models.Model):
         ('external', 'External')
     ]
      exam_committee = models.ForeignKey(ExamCommittee, on_delete=models.CASCADE)
-     committee_members = models.ForeignKey(Staff, on_delete=models.CASCADE) 
+     committee_members = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='committee_members') 
      role = models.CharField(max_length=10, choices=ROLE_CHOICES)
 
      def __str__(self):
@@ -352,10 +352,10 @@ class LabExamInvigilator(models.Model):
 
 
 class ModerationReport(models.Model):
-    notice_question_moderation = models.ForeignKey(NoticeQuestionModeration, on_delete=models.CASCADE)
+    notice_question_moderation = models.ForeignKey(NoticeQuestionModeration, on_delete=models.CASCADE, related_name='notice_question_moderation')
     # notice_question_moderation = models.OneToOneField(NoticeQuestionModeration ,on_delete=models.CASCADE)
     # present_members = models.ManyToManyField(Staff, through='QuestionModMember')
-    present_members = models.ManyToManyField(Staff)
+    present_members = models.ManyToManyField(Staff, related_name='present_members')
 
 
     def __str__(self):

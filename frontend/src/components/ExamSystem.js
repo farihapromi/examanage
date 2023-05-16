@@ -17,7 +17,7 @@ function ExamSystem() {
 
     //  date:"",
   
-       schedule:"",     
+       exam_schedule:"",     
      exam_date:"",
      course_code:"",
       time:"",
@@ -39,12 +39,7 @@ function ExamSystem() {
 
     useEffect(() => {
       // Fetch the list of courses from your backend API
-      axios.get("http://127.0.0.1:8000/core/examschedulelist/",{
-          headers: {
-              'Authorization': `Basic ${btoa(`${username}:${password}`)}`
-            },
-           
-      }).then(response => {
+      axios.get("http://127.0.0.1:8000/core/examscheduledetail/").then(response => {
         setExamSchedules(response.data);
       });
     }, []);
@@ -54,12 +49,7 @@ function ExamSystem() {
 
     useEffect(() => {
         // Fetch the list of courses from your backend API
-        axios.get("http://127.0.0.1:8000/core/courseschedule/",{
-            headers: {
-                'Authorization': `Basic ${btoa(`${username}:${password}`)}`
-              }
-
-        }).then(response => {
+        axios.get("http://127.0.0.1:8000/core/courselist/",).then(response => {
           setCourseCodes(response.data);
         });
       }, []);
@@ -76,17 +66,13 @@ function ExamSystem() {
       function handleSubmit(event) {
         event.preventDefault();
         axios
-          .post("http://localhost:8000/dropdown/createcourseschedule/", formData,
-          {
-            headers: {
-                'Authorization': `Basic ${btoa(`${username}:${password}`)}`
-              }
-        })
+          .post("http://localhost:8000/core/courseschedule/", formData,
+         )
           
           .then((response) => {
             console.log(response.data);
             setFormData({
-            schedule:"",
+            exam_schedule:"",
      
             exam_date:"",
             course_code:"",
@@ -140,12 +126,12 @@ function ExamSystem() {
 
         
 {/* Schedule list */}
-          <label htmlFor="schedule">Schedule</label>
+          <label htmlFor="exam_schedule">Schedule</label>
           <select
             type="text"
-            id="schedule"
-            name="schedule"
-            value={formData.schedule}
+            id=" exam_schedule"
+            name="exam_schedule"
+            value={formData.exam_schedule}
             
             onChange={handleInputChange}
             required

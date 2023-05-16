@@ -5,7 +5,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from .models import *
 from django.http import JsonResponse
-from rest_framework import generics
+from rest_framework import generics 
+from teachers.models import *
+from teachers.serializers import *
+
 
 
 # Create your views here.
@@ -31,11 +34,13 @@ def ques_mod_list(request):
         serializer = NoticeQuesModSerializer(notice, many = True)
         return Response(serializer.data)
     if request.method == 'POST':
-        serializer = NoticeQuesModPostSerializer(data = request.data)
+        serializer = NoticeQuesModSerializer(data = request.data)
         if serializer.is_valid():
            serializer.save()
            return Response(serializer.data, status=status.HTTP_201_CREATED) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
     
 
 @api_view(['GET', 'POST'])
@@ -233,41 +238,98 @@ class CourseScheduleList(generics.ListAPIView):
         exam_schedule_id = self.kwargs['exam_schedule_id']
         return CourseSchedule.objects.filter(exam_schedule_id=exam_schedule_id)
      
+class SemesterView(generics.ListCreateAPIView):
+    queryset = Semester.objects.all()
+    serializer_class = SemesterSerializer
 
+class SemesterDetailView(generics.ListCreateAPIView):
+    queryset = Semester.objects.all()
+    serializer_class = SemesterDetailSerializer
      #examshceudle my edit
 
 class ExamScheduleDetailView(generics.RetrieveAPIView):
       queryset = ExamSchedule.objects.all()
       serializer_class = ExamScheduleDetailSerializer
+
+class ExamCommitteeView(generics.ListCreateAPIView):
+    queryset = ExamCommittee.objects.all()
+    serializer_class = ExamCommitteeSerializer
+
+class ExamCommiteeDetailView(generics.ListCreateAPIView):
+    queryset = ExamCommittee.objects.all()
+    serializer_class = ExamCommitteeDetailSerializer
+
+
+class ExamCommitteeMemberView(generics.ListCreateAPIView):
+    queryset = ExamCommitteeMember.objects.all()
+    serializer_class = ExamCommitteeMemberSerializer 
+
+
+class ExamCommitteeMemberDetailView(generics.ListCreateAPIView):
+    queryset = ExamCommitteeMember.objects.all()
+    serializer_class = ExamCommitteeMemberDetailSerializer
+
+class NoticeQuesModDetailView(generics.ListCreateAPIView):
+    queryset = NoticeQuestionModeration.objects.all()
+    serializer_class = NoticeQuesModDetailSerializer 
+
+class ModerationReportView(generics.ListCreateAPIView):
+    queryset = ModerationReport.objects.all()
+    serializer_class = ModerationReportSerializer
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+# @api_view(['GET','POST'])
+# def moderation_report_create(request):
+#     if request.method == 'GET':
+#       mod_report = ModerationReport.objects.all()
+#       serializer = ModerationReportSerializer(mod_report, many = True)
+#       return Response(serializer.data)
+#     if request.method == 'POST':
+#       serializer = ModerationReportSerializer(data = request.data)
+#       if serializer.is_valid():
+#          serializer.save()
+#          return Response(serializer.data, status=status.HTTP_201_CREATED) 
+#       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET','POST'])
+def teacher_list(request):
+
+   if request.method == 'GET':
+      staff = Staff.objects.all()
+      serializer = StaffSerializer(staff, many = True)
+      return Response(serializer.data)
+   if request.method == 'POST':
+      serializer = StaffPostSerializer(data = request.data)
+      if serializer.is_valid():
+         serializer.save()
+         return Response(serializer.data, status=status.HTTP_201_CREATED) 
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views import View
+from .models import NoticeQuestionModeration, ExamCommitteeMember
+
+class FetchCommitteeMembersView(View):
+    def get(self, request, moderation_id):
+        moderation = get_object_or_404(NoticeQuestionModeration, id=moderation_id)
+        committee_members = ExamCommitteeMember.objects.filter(exam_committee__exam_system=moderation.sem.exam_system, exam_committee__exam_year=moderation.exam_year)
+
+        members_data = []
+        for member in committee_members:
+            members_data.append({
+                'id': member.committee_members.id,
+                'first_name': member.committee_members.first_name,
+                'last_name': member.committee_members.last_name,
+            })
+
+        return JsonResponse(members_data, safe=False)
     
-
-    # def retrieve(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     serializer = self.get_serializer(instance)
-    #     data = serializer.data
-
-    #       # Include course schedule data with invigilator data
-    #     course_schedule_data = []
-    #     for course_schedule in instance.coursescheduledetail_set.all():
-    #         course_schedule_serializer = CourseScheduleSerializer(course_schedule)
-    #         course_schedule_data.append(course_schedule_serializer.data)
-
-    #         # Include invigilator data
-    #         invigilator_data = []
-    #         for invigilator in course_schedule.invigilator.all():
-    #             invigilator_data.append({
-    #                 'id': invigilator.id,
-    #                 'first_name': invigilator.first_name,
-    #                 'last_name': invigilator.last_name,
-    #                 # include any other relevant invigilator fields
-    #             })
-
-    #         course_schedule_data[-1]['invigilator'] = invigilator_data
-        
-    #     data['course_schedule'] = course_schedule_data
-    #     return Response(data)
-    
-
 
 
 # @api_view(['GET'])
@@ -379,4 +441,14 @@ from django.contrib.auth.decorators import login_required
 # def LogoutPage(request):
 #     logout(request)
 #     return redirect('login')
+
+#for react connecting
+
+from django.shortcuts import render
+
+def index(request):
+    return render(request, 'index.html')
+
+def react_page(request):
+    return render(request, 'react_page.html')
 

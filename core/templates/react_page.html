@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>React Page</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js"></script>
+
+    <script src="{% static 'frontend/build/static/js/pages/InvigilationSchedule.js' %}"></script>
+    <script>
+        // Render the React components from invigilator.js
+        ReactDOM.render(
+            React.createElement(InvigilationSchedule),  // Replace InvigilatorComponent with your actual component name
+            document.getElementById('root')
+        );
+    </script>
+</body>
+</html>

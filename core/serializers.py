@@ -4,10 +4,15 @@ from teachers.serializers import *
 
 
 class ExamSystemSerializer(serializers.ModelSerializer):  
-     #department = serializers.StringRelatedField(many=False) 
      class Meta:
           model = ExamSystem
           fields = '__all__'
+
+# class ExamSystemDetailSerializer(serializers.ModelSerializer):  
+#      department = DepartmentSerializer() 
+#      class Meta:
+#           model = ExamSystem
+#           fields = '__all__'
 
 class SemesterSerializer(serializers.ModelSerializer):
      class Meta:
@@ -19,6 +24,31 @@ class SemesterDetailSerializer(serializers.ModelSerializer):
      class Meta:
           model = Semester
           fields = '__all__'
+
+class ExamCommitteeMemberSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ExamCommitteeMember
+        fields = '__all__'
+
+class ExamCommitteeMemberDetailSerializer(serializers.ModelSerializer):
+    committee_members = StaffSerializer()
+    class Meta:
+        model = ExamCommitteeMember
+        fields = '__all__'
+
+class ExamCommitteeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExamCommittee
+        fields = '__all__'
+
+class ExamCommitteeDetailSerializer(serializers.ModelSerializer):
+    exam_system = ExamSystemSerializer()
+#     exam_committee_member = StaffSerializer(many=True)
+
+    class Meta:
+        model = ExamCommittee
+        fields = '__all__'
      
 class NoticeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,16 +67,25 @@ class NoticeQuesModSerializer(serializers.ModelSerializer):
           model = NoticeQuestionModeration
           fields = '__all__'
 
+class NoticeQuesModDetailSerializer(serializers.ModelSerializer):
+     sem = SemesterDetailSerializer()
+     class Meta:
+          model = NoticeQuestionModeration
+          fields = '__all__'
+
 class NoticeQuesModPostSerializer(serializers.ModelSerializer):
 
-     staff = serializers.StringRelatedField( many = True, read_only=True)
+     # staff = serializers.StringRelatedField( many = True, read_only=True)
 
      class Meta:
           model = NoticeQuestionModeration
           fields = ['date', 'day','time', 'exam_year', 'semester', 'year','staff']
 
 
-
+class ModerationReportSerializer(serializers.ModelSerializer):
+     class Meta: 
+          model = ModerationReport
+          fields = '__all__'
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -75,18 +114,9 @@ class ExamScheduleDetailSerializer(serializers.ModelSerializer):
           fields = '__all__'
 
 class CourseScheduleSerializer(serializers.ModelSerializer):
-      #my chnage
-     invigilators = serializers.StringRelatedField(many=True, source='invigilation_schedule.invigilator')
-
-
-     #exam_system_course = serializers.StringRelatedField(many=True)
 
      class Meta:
           model = CourseSchedule
-          #my add
-          # = ['id', 'exam_date', 'course_code', 'time', 'invigilators']
-
-          #fields = ['exam_system_course','course_code', 'course_name']
           fields = '__all__'
 
 
