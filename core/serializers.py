@@ -32,7 +32,7 @@ class ExamCommitteeMemberSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ExamCommitteeMemberDetailSerializer(serializers.ModelSerializer):
-    committee_members = StaffSerializer()
+    committee_members = TabulatorStaffSerializer()
     class Meta:
         model = ExamCommitteeMember
         fields = '__all__'
@@ -49,6 +49,7 @@ class ExamCommitteeDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExamCommittee
         fields = '__all__'
+
      
 class NoticeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,6 +70,7 @@ class NoticeQuesModSerializer(serializers.ModelSerializer):
 
 class NoticeQuesModDetailSerializer(serializers.ModelSerializer):
      sem = SemesterDetailSerializer()
+     exam_committee = ExamCommitteeDetailSerializer()
      class Meta:
           model = NoticeQuestionModeration
           fields = '__all__'
@@ -87,6 +89,12 @@ class ModerationReportSerializer(serializers.ModelSerializer):
           model = ModerationReport
           fields = '__all__'
 
+class ModerationReportDetailSerializer(serializers.ModelSerializer):
+     notice_question_moderation = NoticeQuesModDetailSerializer()
+     present_members = StaffSerializer(many=True)
+     class Meta: 
+          model = ModerationReport
+          fields = '__all__'
 
 class CourseSerializer(serializers.ModelSerializer):
 
@@ -131,7 +139,20 @@ class CourseScheduleDetailSerializer(serializers.ModelSerializer):
           #fields = ['exam_system_course','course_code', 'course_name']
           fields = '__all__'
 
+class LabExamInvigilationScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LabExamInvigilationSchedule
+        fields = '__all__'
 
+class LabCourseScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LabCourseSchedule
+        fields = '__all__'
+
+class LabExamInvigilatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LabExamInvigilator
+        fields = '__all__'
    
 
 class ThirdExaminerNoticeSerializer(serializers.ModelSerializer):
@@ -142,29 +163,17 @@ class ThirdExaminerNoticeSerializer(serializers.ModelSerializer):
           model = ThirdExaminerNotice
           fields = ['memorial_no', 'exam_year', 'date', 'examinee_roll_no', 'exam_system', 'staff', 'course']
 
-# class ExamScehduleSerializer(serializers.ModelSerializer):
-#      class Meta:
-#           model = ExamSchedule
-#           fields = '__all__'
 
-
-
-# class InvigilationScheduleCreateSerializer(serializers.ModelSerializer):
-#      sem = SemesterDetailSerializer()
-     
-#      class Meta:
-#           model = InvigilationSchedule
-#           fields = '__all__'
 
 class LabCourseSerializer(serializers.ModelSerializer):
      class Meta:
           model = LabCourse
           fields = '__all__'
 
-class ExamBillSerializer(serializers.ModelSerializer):
-     class Meta:
-          model = ExamBill
-          fields = '__all__'
+# class ExamBillSerializer(serializers.ModelSerializer):
+#      class Meta:
+#           model = ExamBill
+#           fields = '__all__'
 
 class ExamResponsibilitySerializer(serializers.ModelSerializer):
      class Meta:
@@ -176,9 +185,34 @@ class StencilSerializer(serializers.ModelSerializer):
           model = Stencil
           fields = '__all__'
 
+class StencilDetailSerializer(serializers.ModelSerializer):
+     sem = SemesterDetailSerializer()
+     staff = StaffSerializer()
+     class Meta:
+          model = Stencil
+          fields = '__all__'
 
 class TabulatorSerializer(serializers.ModelSerializer):
      class Meta:
           model = Tabulator
           fields = '__all__'
+
+class TabulatorDetailSerializer(serializers.ModelSerializer):
+     
+     sem = SemesterDetailSerializer()  
+     tabulator = TabulatorStaffSerializer()  
+     class Meta:
+          model = Tabulator
+          fields = '__all__'
+
+class LabInvigilatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LabInvigilator
+        fields = '__all__'
+
+class LabTutorialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LabTutorial
+        fields = '__all__'
+
 

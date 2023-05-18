@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import StaffSerializer, StaffPostSerializer, DepartmentSerializer, DepartmentPostSerializer
+from .serializers import StaffSerializer, DepartmentSerializer, DepartmentPostSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -20,12 +20,12 @@ def teacher_list(request):
       staff = Staff.objects.all()
       serializer = StaffSerializer(staff, many = True)
       return Response(serializer.data)
-   if request.method == 'POST':
-      serializer = StaffPostSerializer(data = request.data)
-      if serializer.is_valid():
-         serializer.save()
-         return Response(serializer.data, status=status.HTTP_201_CREATED) 
-      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+   # if request.method == 'POST':
+   #    serializer = StaffPostSerializer(data = request.data)
+   #    if serializer.is_valid():
+   #       serializer.save()
+   #       return Response(serializer.data, status=status.HTTP_201_CREATED) 
+   #    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
       
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -182,6 +182,8 @@ def teacher(request):
    return render(request,'teacher.html')
 def examsystem(request):
    return render(request,'examsystem.html')
+def home(request):
+   return render(request,'sidebar.html')
 
 
 @login_required

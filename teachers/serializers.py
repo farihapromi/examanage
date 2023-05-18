@@ -17,10 +17,10 @@ class StaffSerializer(serializers.ModelSerializer):
         # fields = [ 'first_name', 'last_name','email', 'department', 'designation', 'university']
         fields = '__all__'
 
-class StaffPostSerializer(serializers.ModelSerializer):
+class TabulatorStaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
-        fields = [ 'password', 'username', 'first_name', 'last_name', 'email', 'department', 'designation', 'university','contact', 'usertype']
+        fields = [ 'id', 'first_name', 'last_name', 'email', 'department', 'designation', 'university']
 
 '''
 class UserTypeSerializer(serializers.ModelSerializer):

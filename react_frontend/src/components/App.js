@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-// import HomePage from "./HomePage";
-import ExamCommitteeForm from "./ExamCommiteeForm";
+import HomePage from './Homepage'
+import InvigilationSchedule from "./InvigilationSchedule";
+// import ExamCommitteeForm from "./ExamCommiteeForm";
 
 export default class App extends Component {
   constructor(props) {
@@ -11,9 +12,11 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        {/* <HomePage /> */}
         <h1>This is my App</h1>
-        <ExamCommitteeForm/>
+        {/* <HomePage /> */}
+        <InvigilationSchedule/>
+        
+        {/* <ExamCommitteeForm/> */}
       </div>
     );
   }
