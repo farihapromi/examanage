@@ -149,18 +149,85 @@ def course_schedule_detail(request, id):
         serializer = CourseScheduleDetailSerializer(course_schedule)
         return Response(serializer.data)  
     
-# @api_view(['GET', 'POST'])
-# def invigilation_schedule_list(request):
-#     if request.method == 'GET':
-#         invigilation_schedule = InvigilationSchedule.objects.all()
-#         serializer = InvigilationScheduleSerializer(invigilation_schedule, many = True)
-#         return Response(serializer.data)
-#     if request.method == 'POST':
-#         serializer = InvigilationScheduleSerializer(data = request.data)
-#         if serializer.is_valid():
-#            serializer.save()
-#            return Response(serializer.data, status=status.HTTP_201_CREATED) 
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class CourseScheduleDetailView(generics.ListAPIView):
+    queryset = CourseSchedule.objects.all()
+    serializer_class = CourseScheduleDetailSerializer
+    
+# lab course exam schedule schedule view
+
+@api_view(['GET', 'POST'])
+def lab_exam_schedule_list(request):
+    if request.method == 'GET':
+        lab_exam_schedule = LabExamInvigilationSchedule.objects.all()
+        serializer = LabExamInvigilationScheduleSerializer(lab_exam_schedule, many = True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = LabExamInvigilationScheduleSerializer(data = request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_201_CREATED) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET', 'POST'])
+def lab_exam_schedule_detail(request):
+    if request.method == 'GET':
+        lab_exam_schedule = LabExamInvigilationSchedule.objects.all()
+        serializer = LabExamInvigilationScheduleDetailSerializer(lab_exam_schedule, many=True)
+        return Response(serializer.data)
+
+@api_view(['GET', 'POST'])
+def lab_course_schedule_list(request):
+    if request.method == 'GET':
+        lab_course_schedule = LabCourseSchedule.objects.all()
+        serializer = LabCourseScheduleSerializer(lab_course_schedule, many = True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = LabCourseScheduleSerializer(data = request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_201_CREATED) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def lab_course_schedule_detail(request, id):
+    try:
+      lab_course_schedule = LabCourseSchedule.objects.get(pk=id)
+    except LabCourseSchedule.DoesNotExist:
+      return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        lab_course_schedule = LabCourseSchedule.objects.get(pk=id)
+        serializer = LabCourseScheduleDetailSerializer(lab_course_schedule)
+        return Response(serializer.data)  
+    
+class LabCourseScheduleDetailView(generics.ListAPIView):
+    queryset = LabCourseSchedule.objects.all()
+    serializer_class = LabCourseScheduleDetailSerializer
+    
+@api_view(['GET', 'POST'])
+def invigilator_list(request):
+    if request.method == 'GET':
+        invigilator = Invigilator.objects.all()
+        serializer = InvigilatorSerializer(invigilator, many = True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = InvigilatorSerializer(data = request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_201_CREATED) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def invigilator_detail(request, id):
+    try:
+      invigilator = Invigilator.objects.get(pk=id)
+    except InvigilatorSerializer.DoesNotExist:
+      return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        invigilator = Invigilator.objects.get(pk=id)
+        serializer = InvigilatorDetailSerializer(invigilator)
+        return Response(serializer.data)  
     
 
 @api_view(['GET', 'POST'])
@@ -224,12 +291,16 @@ class TabulatorDetailView(generics.ListAPIView):
 #            serializer.save()
 #            return Response(serializer.data, status=status.HTTP_201_CREATED) 
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ExamBillView(generics.ListCreateAPIView):
+    queryset = ExamBill.objects.all()
+    serializer_class = ExamBillSerializer
     
 class LabExamInvigilationScheduleListCreateView(generics.ListCreateAPIView):
     queryset = LabExamInvigilationSchedule.objects.all()
     serializer_class = LabExamInvigilationScheduleSerializer
 
-class LabExamInvigilationScheduleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class LabExamInvigilationScheduleRetrieveUpdateDestroyView(generics.ListAPIView):
     queryset = LabExamInvigilationSchedule.objects.all()
     serializer_class = LabExamInvigilationScheduleSerializer
 
@@ -237,9 +308,12 @@ class LabCourseScheduleListCreateView(generics.ListCreateAPIView):
     queryset = LabCourseSchedule.objects.all()
     serializer_class = LabCourseScheduleSerializer
 
-class LabCourseScheduleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = LabCourseSchedule.objects.all()
-    serializer_class = LabCourseScheduleSerializer
+class LabCourseScheduleList(generics.ListAPIView):
+    serializer_class = LabCourseScheduleDetailSerializer
+
+    def get_queryset(self):
+        lab_exam_schedule_id = self.kwargs['lab_exam_schedule_id']
+        return LabCourseSchedule.objects.filter(lab_exam_schedule_id=lab_exam_schedule_id)
 
 class LabExamInvigilatorListCreateView(generics.ListCreateAPIView):
     queryset = LabExamInvigilator.objects.all()
@@ -302,7 +376,42 @@ class NoticeQuesModDetailView(generics.ListCreateAPIView):
 class ModerationReportView(generics.ListCreateAPIView):
     queryset = ModerationReport.objects.all()
     serializer_class = ModerationReportSerializer
-    
+
+# views for examiner list
+
+class ExaminerListView(generics.ListCreateAPIView):
+    queryset = ExaminerList.objects.all()
+    serializer_class = ExaminerListSerializer
+
+class ExaminerListDetailView(generics.ListAPIView):
+    queryset = ExaminerList.objects.all()
+    serializer_class = ExaminerListDetailSerializer
+
+class CourseExaminerView(generics.ListCreateAPIView):
+    queryset = CourseExaminer.objects.all()
+    serializer_class = CourseExaminerSerializer
+
+class CourseExaminerList(generics.ListAPIView):
+    serializer_class = CourseExaminerDetailSerializer
+
+    def get_queryset(self):
+        examiner_list_id = self.kwargs['examiner_list_id']
+        return CourseExaminer.objects.filter(examiner_list_id=examiner_list_id)
+
+class CourseExaminerDetailView(generics.ListAPIView):
+    queryset = CourseExaminer.objects.all()
+    serializer_class = CourseExaminerDetailSerializer
+
+class ExaminerView(generics.ListCreateAPIView):
+    queryset = Examiner.objects.all()
+    serializer_class = ExaminerSerializer
+
+class ExaminerDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Examiner.objects.all()
+    serializer_class = ExaminerSerializer
+
+    # views for examiner list ends here
+
 @api_view(['GET'])
 def moderation_reports(request):
     moderation_id = request.GET.get('moderation_id')
@@ -349,6 +458,12 @@ class FetchCommitteeMembersView(View):
             })
 
         return JsonResponse(members_data, safe=False)
+    
+def moderation_reports_detail(request, responsibility_id):
+    moderation_report = get_object_or_404(ModerationReport, notice_question_moderation__id=responsibility_id)
+
+    serializer = ModerationReportDetailSerializer(moderation_report)
+    return JsonResponse(serializer.data)
 
 class StencilListCreateView(generics.ListCreateAPIView):
     queryset = Stencil.objects.all()
@@ -358,13 +473,13 @@ class StencilRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Stencil.objects.all()
     serializer_class = StencilSerializer
 
-class TabulatorListCreateView(generics.ListCreateAPIView):
-    queryset = Tabulator.objects.all()
-    serializer_class = TabulatorSerializer
+# class TabulatorListCreateView(generics.ListCreateAPIView):
+#     queryset = Tabulator.objects.all()
+#     serializer_class = TabulatorSerializer
 
-class TabulatorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Tabulator.objects.all()
-    serializer_class = TabulatorSerializer
+# class TabulatorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Tabulator.objects.all()
+#     serializer_class = TabulatorSerializer
 
 class TabulatorMemberDetailView(generics.ListCreateAPIView):
     queryset = Tabulator.objects.all()
@@ -383,9 +498,45 @@ class LabTutorialListCreateView(generics.ListCreateAPIView):
     queryset = LabTutorial.objects.all()
     serializer_class = LabTutorialSerializer
 
-class LabTutorialRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class LabTutorialDetailView(generics.ListAPIView):
     queryset = LabTutorial.objects.all()
-    serializer_class = LabTutorialSerializer    
+    serializer_class = LabTutorialDetailSerializer  
+
+# modified labtutoriallist and labcoursechief model view
+
+class LabTutorialListView(generics.ListCreateAPIView):
+    queryset = LabTutorialList.objects.all()
+    serializer_class = LabTutorialListSerializer
+
+class LabTutorialListDetailView(generics.ListAPIView):
+    queryset = LabTutorialList.objects.all()
+    serializer_class = LabTutorialListDetailSerializer
+
+class LabCourseChiefListView(generics.ListCreateAPIView):
+    queryset = LabCourseChief.objects.all()
+    serializer_class = LabCourseChiefSerializer
+
+class LabCourseChiefDetailView(generics.ListAPIView):
+    queryset = LabCourseChief.objects.all()
+    serializer_class = LabCourseChiefDetailSerializer  
+
+# tabulator modified views
+
+class TabulatorListView(generics.ListCreateAPIView):
+    queryset = TabulatorList.objects.all()
+    serializer_class = TabulatorListSerializer
+
+class TabulatorListDetailView(generics.ListAPIView):
+    queryset = TabulatorList.objects.all()
+    serializer_class = TabulatorListDetailSerializer
+
+class TabulatorInfoView(generics.ListCreateAPIView):
+    queryset = TabulatorInfo.objects.all()
+    serializer_class = TabulatorInfoSerializer
+
+class TabulatorInfoDetailView(generics.ListAPIView):
+    queryset = TabulatorInfo.objects.all()
+    serializer_class = TabulatorInfoDetailSerializer
 
 class ExamResponsibilityListCreateView(generics.ListCreateAPIView):
     queryset = ExamResponsibility.objects.all()
@@ -394,6 +545,10 @@ class ExamResponsibilityListCreateView(generics.ListCreateAPIView):
 class ExamResponsibilityRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ExamResponsibility.objects.all()
     serializer_class = ExamResponsibilitySerializer
+
+class ExamResponsibilityDetailView(generics.ListAPIView):
+    queryset = ExamResponsibility.objects.all()
+    serializer_class = ExamResponsibilityDetailSerializer
 
 
 from django.http import JsonResponse
@@ -418,6 +573,17 @@ class ExamCommitteeMemberList(generics.ListAPIView):
     def get_queryset(self):
         exam_committee_id = self.kwargs['exam_committee_id']
         return ExamCommitteeMember.objects.filter(exam_committee_id=exam_committee_id, role='member')
+
+# fetch present members for checking in exam bill form against staff
+def present_members_view(request, responsibility_id):
+    try:
+        exam_responsibility = ExamResponsibility.objects.get(id=responsibility_id)
+        present_members = exam_responsibility.moderation_report.present_members.values_list('id', flat=True)
+        # Modify the above line to fetch the appropriate present members based on your data structure
+
+        return JsonResponse({'present_members': list(present_members)})
+    except ExamResponsibility.DoesNotExist:
+        return JsonResponse({'error': 'Exam responsibility does not exist'}, status=404)
 
 # @api_view(['GET'])
 # def exam_schedule_invigilators(request, exam_schedule_id):

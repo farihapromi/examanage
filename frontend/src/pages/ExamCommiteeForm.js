@@ -4,9 +4,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory ,useNavigate,Link} from "react-router-dom";
+import NavBar from "../components/NavBar";
 
 const ExamCommitteeForm = () => {
-  // const navigate = useNavigate(); 
+  const navigate = useNavigate(); 
 
   const [examSystems, setExamSystems] = useState([]);
   const [selectedExamSystem, setSelectedExamSystem] = useState("");
@@ -60,7 +61,9 @@ const ExamCommitteeForm = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     // Create the exam committee using the selected values
+    navigate('/committee-member');
 
     const data = {
       exam_system: selectedExamSystem,
@@ -71,6 +74,7 @@ const ExamCommitteeForm = () => {
       // })
       // )
      // Replace with the selected exam year
+    
     };
 
     axios.post("http://127.0.0.1:8000/core/exam-committees/", data).then((response) => {
@@ -80,6 +84,15 @@ const ExamCommitteeForm = () => {
   };
 
   return (
+  <div>
+    {/* start */}
+    <NavBar/>
+    {/* end */}
+
+
+
+
+    <h1>Create Exam Commitee</h1>
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="examSystem">Exam System:</label>
@@ -140,12 +153,23 @@ const ExamCommitteeForm = () => {
       />
     </div>
     <br />
+    <div>
+  <button type="submit">Create Exam Committee</button>
+  <Link to="/committee-member"></Link>
+</div>
 
+
+{/*      
+    <button type="submit">Create Exam Committee</button>
      
+      <Link to="/committee-member">
+     
+        </Link>  */}
 
-      <button type="submit">Create Exam Committee</button>
-      {/* <Link to="/CommiteeMember">Skip to Exam Committee Members</Link>  */}
     </form>
+
+
+    </div>
   );
 };
 

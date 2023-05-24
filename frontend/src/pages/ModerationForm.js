@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link,useNavigate} from "react-router-dom";
+import NavBar from "../components/NavBar";
 
-const ModerationForm= () => {
+const  ModerationForm= () => {
+  const navigate = useNavigate(); 
   const [moderations, setModerations] = useState([]);
   const [selectedModeration, setSelectedModeration] = useState("");
   const [committeeMembers, setCommitteeMembers] = useState([]);
@@ -57,6 +60,9 @@ const ModerationForm= () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    navigate('/moderation-report');
+
+
     // Create the moderation report using the selected values
 
     const data = {
@@ -76,7 +82,17 @@ const ModerationForm= () => {
       });
   };
 
+
+  
   return (
+    <div>
+{/* start */}
+<NavBar/>
+
+{/* end */}
+<br />
+<br />
+
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="moderation">Notice Question Moderation:</label>
@@ -112,7 +128,13 @@ const ModerationForm= () => {
       </div>
 
       <button type="submit">Create Moderation Report</button>
+      
+  <Link to="/moderation-report"></Link>
+
+
+
     </form>
+    </div>
   );
 };
 

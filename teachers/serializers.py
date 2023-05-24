@@ -4,12 +4,15 @@ from .models import Staff, Department
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = ['id', 'name', 'shortcode']
+        # fields = ['id', 'name', 'shortcode']
+        fields = '__all__'
+
 
 class DepartmentPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = ['name', 'shortcode']
+        # fields = ['name', 'shortcode', 'shortcode_bengali']
+        fields = '__all__'
 
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:

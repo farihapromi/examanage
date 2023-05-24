@@ -25,7 +25,7 @@ const MyComponent = () => {
     //  time:""
    
     });
-
+    const [submittedData, setSubmittedData] = useState(null);
 
 
   useEffect(() => {
@@ -73,6 +73,7 @@ const MyComponent = () => {
       .then((response) => {
         // Handle the response if needed
         // console.log(response.data);
+        setSubmittedData(response.data);
       
         setFormData({
           exam_committee:"",
@@ -93,6 +94,7 @@ const MyComponent = () => {
 
   return (
     <div>
+      <h1>Create Exam Commitee Member</h1>
       <form onSubmit={handleSubmit}>
       
         <label htmlFor="examCommittee">Exam Committee:</label>
@@ -134,6 +136,26 @@ const MyComponent = () => {
       </div>
         <button type="submit">Submit</button>
       </form>
+      {/* showing submitted data */}
+      
+      {submittedData && (
+  <div style={{ textAlign: "center" }}>
+    <h2>Selected Data</h2>
+    <p>
+      Exam Committee:{" "}
+      {examCommittee.find((item) => item.id === submittedData.exam_committee)?.exam_system.year} year
+    </p>
+    <p>
+      Committee Member:{" "}
+      {committeeMembers.find((item) => item.id === submittedData.committee_members)?.first_name}{" "}
+      {committeeMembers.find((item) => item.id === submittedData.committee_members)?.last_name}
+    </p>
+    <p>Role: {submittedData.role}</p>
+  </div>
+)}
+
+
+
     </div>
   );
 };

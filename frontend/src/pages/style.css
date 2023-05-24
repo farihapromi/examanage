@@ -9,3 +9,38 @@
     padding: 8px;
     
   }
+  .dept{
+    text-align: center;
+   
+    font-weight:0.5rem;
+    font-size:20px;
+  }
+  .dept-name{
+    text-align: center;
+  
+    /* line-height: 0.5rem; */
+    font-size:20px;
+  }
+  .address{
+    text-align: center;
+    line-height: 0.5rem;
+    font-size:15px;
+  }
+  .semester{
+    text-align: center;
+    text-decoration: underline;
+  }
+  .schedule{
+    text-align: center;
+    /* line-height: 1.5rem; */
+    font-size:20px;
+  }
+  .para-for{
+    text-align: center;
+    text-decoration: underline;
+    /* line-height: 0.5rem; */
+    font-size:20px;
+  }
+  .semester{
+    line-height: 0.5rem;
+  }

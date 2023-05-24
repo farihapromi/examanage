@@ -4,6 +4,8 @@ import img2 from './img2.png';
 import './notice.css';
 import { useReactToPrint } from 'react-to-print';
 import html2pdf from 'html2pdf.js';
+import {Link} from 'react-router-dom';
+import NavBar from '../components/NavBar';
 
 function New() {
   const [moderations, setModerations] = useState([]);
@@ -60,7 +62,11 @@ function New() {
 
   return (
     <div>
-
+{/* start */}
+<NavBar/>
+{/* end */}
+<br />
+<br />
       <div>
         <label htmlFor="moderation">Select a moderation:</label>
         <select id="moderation" value={selectedModeration} onChange={handleModerationChange}>
@@ -88,7 +94,7 @@ function New() {
         <div className="img">
           <img src={img2} className="img-left" alt="" />
         </div>
-        <h1 className="dept fw-bold"> Department of Computer Science and Engineering</h1>
+        <h1 className="dept "> Department of Computer Science and Engineering</h1>
         <p className="text-center">
           JAHANGIRNAGAR UNIVERSITY
           <br />

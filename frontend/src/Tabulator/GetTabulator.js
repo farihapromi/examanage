@@ -177,13 +177,13 @@ function GetTabulator() {
             <input
       type="radio"
       value={member.committee_members.id}
-      id={`member-${member.id}`}
+      id={`member-${member.committee_members.id}`}
       name="selectedMember"
       // checked={selectedMembers === member.id}
-      checked={selectedMembers.includes(member.id)}
-      onChange={() => handleMemberSelection(member.id)}
+      checked={selectedMembers.includes(member.committee_members.id)}
+      onChange={() => handleMemberSelection(member.committee_members.id)}
     />
-            <label htmlFor={`member-${member.id}`}>
+            <label htmlFor={`member-${member.committee_members.id}`}>
               {member.committee_members.first_name} {member.committee_members.last_name}
             </label>
           </div>

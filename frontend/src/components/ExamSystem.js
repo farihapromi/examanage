@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import axios from "axios";
+import {Link} from 'react-router-dom';
 function ExamSystem() {
     const username = 'promi';
     const password = '123';
@@ -26,6 +27,8 @@ function ExamSystem() {
    
     });
     console.log(formData)
+    
+  const [submittedData, setSubmittedData] = useState(null);
 
 
     //for schedule from sem  ,exam schedule theme sem pabo
@@ -71,6 +74,7 @@ function ExamSystem() {
           
           .then((response) => {
             console.log(response.data);
+            setSubmittedData(response.data);
             setFormData({
             exam_schedule:"",
      
@@ -105,8 +109,52 @@ function ExamSystem() {
             console.log(error.config);
           });
       }
+
+      
       
       return (
+        <div>
+
+<nav className='nav'>
+        <a href="/" className='site-title'>Dashboard</a>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/invigilator">Invigilator</Link>
+          </li>
+          <li>
+            <Link to="exam-committee-form">Exam Committee</Link>
+          </li>
+          <li>
+            <Link to="/question-mod">Question moderation</Link>
+          </li>
+
+          <li>
+            <Link to="/moderation-form">Moderation Form</Link>
+          </li>
+
+          <li>
+            <Link to="/course-schedule">Course Schedules</Link>
+          </li>
+          {/* <li>
+            <Link to="/committee-member">Committee Member</Link>
+          </li> */}
+          {/* <li>
+            <Link to="/notice-mod">Notice Moderation</Link>
+          </li> */}
+        
+          <li>
+            <Link to="/moderation-report">Moderation Report</Link>
+          </li>
+
+
+        </ul>
+      </nav>
+
+
+          <h1>Theory Course Schedules</h1>
         <form onSubmit={handleSubmit}>
          
          {/* <label htmlFor="">Exam Date<input type="date" id="today" /></label>  */}
@@ -193,7 +241,21 @@ function ExamSystem() {
           
     
           <button type="submit">Submit</button>
+
+
         </form>
+        {submittedData && (
+        <div>
+          <h2>Submitted Data</h2>
+          <p>Exam Date: {submittedData.exam_date}</p>
+          <p>Exam Schedule: {submittedData.exam_schedule}</p>
+          <p>Course Code: {submittedData.course_code}</p>
+          <p>Time: {submittedData.time}</p>
+        </div>
+      )}
+
+        </div>
+        
       );
 }
       export default ExamSystem;                  
