@@ -66,6 +66,19 @@ import ExaminerTable from './PrintNotice/ExaminerTable';
 import ResposiblityForm from './pages/ResposiblityForm';
 import Summaryreport from './PrintNotice/Summaryreport';
 
+// final report
+import ReportFinal from './PrintNotice/ReportFinal';
+import FormFinal from './PrintNotice/FormFinal';
+
+// third examiner assignment
+
+import AssignThirdExaminer from './ThirdExaminer/AssignThirdExaminer';
+
+//for lab_turoial
+import Tutorial from './PrintNotice/Tutorial';
+import FormForThiredExaminer from './ThirdExaminer/FormForThiredExaminer';
+import FinalExamBill from './Bill/FinalExamBill';
+import CommitteeSelection from './Bill/CommitteeSelection';
 
 
 
@@ -128,6 +141,17 @@ function App() {
          <Route path="/reponsibility-form" element={<ResposiblityForm/>} />
 
          <Route path="/summary-form" element={<Summaryreport/>} />
+         <Route path="/report-final" element={<ReportFinal/>} />
+         <Route path="/form-final" element={<FormFinal/>} />
+
+         <Route path="/assign-third-examiner" element={<AssignThirdExaminer/>} />
+         <Route path="/tutorial" element={<Tutorial/>} />
+
+         <Route path="/form-third-examiner" element={<FormForThiredExaminer/>} />
+         <Route path="/final-exam-bill" element={<FinalExamBill/>} />
+
+         <Route path="/exam-committee-selection" element={<CommitteeSelection/>} />
+
 
 
 

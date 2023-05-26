@@ -19,13 +19,19 @@ path('examsystemlist/', views.exam_system_list, name='exam_system_list'),
 path('semester-list/', views.SemesterView.as_view(), name = 'semester_create'),
 path('semester-detail-list/', views.SemesterDetailView.as_view(), name = 'semester_detail'),
 path('courselist/', views.course_list, name='course_list'),
-path('thirdexaminernoticelist/', views.third_examiner_notice_list, name='third_examiner_notice_list'),
+#third examiner view url
+path('third-examiner-notice-list/', views.third_examiner_notice_list, name='third_examiner_notice_list'),
+path('third-examiner-list/', views.third_examiner_list, name='third_examiner_list'),
+path('third-examiner-notice-detail-list/', views.ThirdExaminerNoticeDetailList.as_view(), name='third_examiner_notice_detail_list'),
+path('third-examiner-detail-list/', views.ThirdExaminerDetailList.as_view(), name='third_examiner_detail_list'),
+path('third-examiner-notice-detail-list/<int:notice_id>/third-examiner-detail-list/', views.ThirdExaminerList.as_view(), name='third-examiner-list'),
 path('labcourselist/', views.lab_course_list , name = 'lab_course_list'),
 path('examschedulelist/', views.exam_schedule_list , name = 'exam_schedule_list'),
 path('examscheduledetail/', views.exam_schedule_detail , name = 'exam_schedule_detail'),
 path('stencillist/', views.stencil_list , name = 'stencil_list'),
 # path('exam-bills/', views.exam_bill_list , name = 'exam_bill_list'),
  path('exam-bills/', views.ExamBillView.as_view(), name='exam-bill-list'),
+path('exam-bill-detail/', views.ExamBillDetailView.as_view(), name='exam-bill-detail-list'),
 path('exam-responsibility-list/', views.exam_responsibility_list , name = 'exam_responsibility_list'),
 # theory course exam schedule
 path('invigilator/', views.invigilator_list , name = 'invigilator_list'),
@@ -54,8 +60,10 @@ path('committee-members/', views.ExamCommitteeMemberView.as_view(), name='exam_c
 path('committee-detail/',views.ExamCommiteeDetailView.as_view(),name='commitee-detail'),
 path('committee-members-detail/', views.ExamCommitteeMemberDetailView.as_view(), name='exam_committee_member_detail'),
 path('staff-list/', views.teacher_list, name='teacher-list'),
+# exam committee details to be sent to exam office
+path('committee-detail/<int:exam_committee_id>/committee-members-detail/', views.ExamCommitteeMemberDetailList.as_view(), name='exam-committee-member-role'),
 # fetch all members of an exam committee for moderation report whether the members are present or not
-path('fetch-committee-members/<int:moderation_id>/', views.FetchCommitteeMembersView.as_view(), name='fetch_committee_members'),
+path('fetch-committee-members/<int:moderation_id>/committee-members-detail/', views.FetchCommitteeMembersView.as_view(), name='fetch_committee_members'),
 # fetch only committee members with member role for using in tabulator model 
 path('exam-committees/<int:exam_committee_id>/committee-members-detail/', views.ExamCommitteeMemberList.as_view(), name='fetch_committee_members_role'),
 #stencil, tabualtor, labinvigilator url
@@ -88,6 +96,8 @@ path('lab-course-chief-detail/', views.LabCourseChiefDetailView.as_view(), name=
 path('exam-responsibilities/', views.ExamResponsibilityListCreateView.as_view(), name='exam-responsibility-list-create'),
 path('exam-responsibilities/<int:pk>/', views.ExamResponsibilityRetrieveUpdateDestroyView.as_view(), name='exam-responsibility-retrieve-update-destroy'),
 path('exam-responsibility-detail/', views.ExamResponsibilityDetailView.as_view(), name='exam-responsibility-detail'),
+path('exam-responsibility-detail/<int:pk>/', views.ExamResponsibilityRetrieveDetailView.as_view(), name='exam-responsibility-detail'),
+
 # exam bill related url
 path('exam-responsibility-detail/<int:responsibility_id>/present-members', views.present_members_view, name='present_members'),
 path('moderation-reports-detail/<int:responsibility_id>/', views.moderation_reports_detail, name='moderation_reports_detail'),
@@ -99,6 +109,10 @@ path('course-examiner-detail/', views.CourseExaminerDetailView.as_view(), name='
 path('examiner/', views.ExaminerView.as_view(), name='examiner'),
 path('examiner/<int:pk>/',views.ExaminerDetailView.as_view(), name='examiner-detail'),
 path('examiner-detail-list/<int:examiner_list_id>/course-examiner-detail/', views.CourseExaminerList.as_view()),
+
+# lab exam invigilation schedule 
+# path('lab-exam-invigilation-schedules/', views.LabExamInvigilationScheduleViewSet.as_view({'get': 'list', 'post': 'create'})),
+# path('lab-exam-invigilation-schedules/<int:pk>/', views.LabExamInvigilationScheduleViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'})),
 
 
 ]

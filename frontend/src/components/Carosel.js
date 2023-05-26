@@ -9,20 +9,20 @@ import { Carousel } from "react-responsive-carousel";
 
 const imageData = [
   {
-    label: "Image 1",
+    
     alt: "image1",
     url:img1,
     
 },
     
   {
-    label: "Image 2",
+  
     alt: "image2",
     url:img4,
      
   },
   {
-    label: "Image 3",
+   
     alt: "image3",
     url: img5},
  

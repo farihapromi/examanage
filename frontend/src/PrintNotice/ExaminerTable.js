@@ -9,7 +9,7 @@ const ExaminerTable = () => {
 
   useEffect(() => {
     // Fetch examiner-lists
-    axios.get('http://127.0.0.1:8000/core/examiner-list/')
+    axios.get('http://127.0.0.1:8000/core/examiner-detail-list/')
       .then(response => {
         setExaminerLists(response.data);
       })

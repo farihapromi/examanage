@@ -8,8 +8,7 @@ from django.http import JsonResponse
 from rest_framework import generics 
 from teachers.models import *
 from teachers.serializers import *
-
-
+from rest_framework import viewsets
 
 # Create your views here.
 
@@ -85,6 +84,27 @@ def third_examiner_notice_list(request):
            return Response(serializer.data, status=status.HTTP_201_CREATED) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
     
+class ThirdExaminerNoticeDetailList(generics.ListAPIView):
+    queryset = ThirdExaminerNotice.objects.all()
+    serializer_class = ThirdExaminerNoticeDetailSerializer
+
+    
+@api_view(['GET', 'POST'])
+def third_examiner_list(request):
+    if request.method == 'GET':
+        third_examiner = ThirdExaminer.objects.all()
+        serializer = ThirdExaminerSerializer(third_examiner, many = True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = ThirdExaminerSerializer(data = request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_201_CREATED) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+    
+class ThirdExaminerDetailList(generics.ListAPIView):
+    queryset = ThirdExaminer.objects.all()
+    serializer_class = ThirdExaminerDetailSerializer
 
 
 
@@ -295,6 +315,10 @@ class TabulatorDetailView(generics.ListAPIView):
 class ExamBillView(generics.ListCreateAPIView):
     queryset = ExamBill.objects.all()
     serializer_class = ExamBillSerializer
+
+class ExamBillDetailView(generics.ListAPIView):
+    queryset = ExamBill.objects.all()
+    serializer_class = ExamBillDetailSerializer 
     
 class LabExamInvigilationScheduleListCreateView(generics.ListCreateAPIView):
     queryset = LabExamInvigilationSchedule.objects.all()
@@ -308,12 +332,24 @@ class LabCourseScheduleListCreateView(generics.ListCreateAPIView):
     queryset = LabCourseSchedule.objects.all()
     serializer_class = LabCourseScheduleSerializer
 
+class LabCourseScheduleDetailList(generics.ListAPIView):
+    queryset = LabCourseSchedule.objects.all()
+    serializer_class = LabCourseScheduleDetailSerializer
+
 class LabCourseScheduleList(generics.ListAPIView):
     serializer_class = LabCourseScheduleDetailSerializer
 
     def get_queryset(self):
         lab_exam_schedule_id = self.kwargs['lab_exam_schedule_id']
         return LabCourseSchedule.objects.filter(lab_exam_schedule_id=lab_exam_schedule_id)
+    
+class ThirdExaminerList(generics.ListAPIView):
+    serializer_class = ThirdExaminerDetailSerializer
+
+    def get_queryset(self):
+        notice_id = self.kwargs['notice_id']
+        return ThirdExaminer.objects.filter(notice_id=notice_id)
+         
 
 class LabExamInvigilatorListCreateView(generics.ListCreateAPIView):
     queryset = LabExamInvigilator.objects.all()
@@ -550,6 +586,10 @@ class ExamResponsibilityDetailView(generics.ListAPIView):
     queryset = ExamResponsibility.objects.all()
     serializer_class = ExamResponsibilityDetailSerializer
 
+class ExamResponsibilityRetrieveDetailView(generics.RetrieveAPIView):
+    queryset = ExamResponsibility.objects.all()
+    serializer_class = ExamResponsibilityDetailSerializer
+
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
@@ -574,6 +614,21 @@ class ExamCommitteeMemberList(generics.ListAPIView):
         exam_committee_id = self.kwargs['exam_committee_id']
         return ExamCommitteeMember.objects.filter(exam_committee_id=exam_committee_id, role='member')
 
+class ExamCommitteeChairmanList(generics.ListAPIView):
+    serializer_class = ExamCommitteeMemberDetailSerializer
+
+    def get_queryset(self):
+        exam_committee_id = self.kwargs['exam_committee_id']
+        return ExamCommitteeMember.objects.filter(exam_committee_id=exam_committee_id, role='chairman')
+
+class ExamCommitteeMemberDetailList(generics.ListAPIView):
+    serializer_class = ExamCommitteeMemberDetailSerializer
+
+    def get_queryset(self):
+        exam_committee_id = self.kwargs['exam_committee_id']
+        return ExamCommitteeMember.objects.filter(exam_committee_id=exam_committee_id)
+
+
 # fetch present members for checking in exam bill form against staff
 def present_members_view(request, responsibility_id):
     try:
@@ -596,6 +651,10 @@ def present_members_view(request, responsibility_id):
 #         invigilators[course_schedule.id] = invigilator_list
 #     return Response(invigilators)
 
+
+# class LabExamInvigilationScheduleViewSet(viewsets.ModelViewSet):
+#     queryset = LabExamInvigilationSchedule.objects.all()
+#     serializer_class = LabExamInvigilationScheduleNewSerializer
 
 from django.shortcuts import render
 

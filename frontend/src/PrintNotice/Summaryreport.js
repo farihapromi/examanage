@@ -4,6 +4,11 @@ import axios from 'axios';
 
 function Summaryreport() {
     const[examresponsibility, setExamResponsibilities]=useState([]);
+    const[selectedExamResponse,setSelectedExamResponse]=useState([]);
+    
+    const [examSchedules, setExamSchedules] = useState([]);
+    const [selectedExamScheduleId, setSelectedExamScheduleId] = useState(null);
+    
 
     
     useEffect(() => {
@@ -14,6 +19,18 @@ function Summaryreport() {
           });
       }, []);
 
+
+      //for selectinfpartciual id wise exam reponse
+      useEffect(() => {
+        fetch('http://127.0.0.1:8000/core/exam-responsibility-detail/')
+            .then(response => response.json())
+            .then(data => setExamSchedules(data))
+            .catch(error => console.error(error));
+    }, []);
+
+
+    
+ 
 
       function convertToBanglaNumber(number) {
         const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
@@ -38,10 +55,31 @@ function Summaryreport() {
         return banglaNumber;
       }
 
+const  handleSelectExamResponse=(e)=>{
+  setSelectedExamResponse(e.target.value);
+}
 
 
   return (
     <div>
+
+
+      {/* for seelcting exam schdule */}
+
+
+
+      <select value={selectedExamResponse} onChange={ handleSelectExamResponse}>
+                    <option value="">Select an exam responsibility</option>
+                    {examresponsibility.map(examresponse => (
+                        
+                        <option key={examresponse.id} value={examresponse.id}>
+                       {examresponse.sem.exam_system.year}year   {examresponse.sem.semester} semester
+                       {examresponse.exam_year} 
+                        </option>
+                    ))}
+                </select>
+                {/* end */}
+
         <h1 style={{ textAlign: 'center' }}>পরীক্ষা নিয়ন্ত্রকের অফিস</h1>
         <h1 style={{ textAlign: 'center' }}>জাহাঙ্গীরনগর বিশ্ববিদ্যালয়</h1>
         <p style={{ textAlign: 'center' }}>সাভার,ঢাকা</p>

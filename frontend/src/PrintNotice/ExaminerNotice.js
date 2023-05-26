@@ -1,6 +1,7 @@
 import React, { useState ,useEffect,useRef} from 'react'
 import axios from 'axios';
 import img1 from './img1.png'
+import './ExaminerNotice.css'
 
 
 
@@ -146,7 +147,7 @@ const dateToBengaliNumerals = number => {
 
         {selectedExamSchedule && (
   <div key={selectedExamSchedule.id}>
-    <h2>
+    <h2 className='text-size' >
       বিষয়ঃ {convertToBengaliNumerals(selectedExamSchedule.sem.exam_system.year)} পর্ব {convertToBengaliNumerals(selectedExamSchedule.sem.semester)} সেমিস্টার
       স্নাতক(সম্মান) { dateToBengaliNumerals(selectedExamSchedule.exam_year)} প্রশ্নকর্তা ও পরীক্ষকের তালিকা
     </h2>
@@ -156,15 +157,21 @@ const dateToBengaliNumerals = number => {
     {/* Add other properties of selectedExamSchedule as needed */}
     <p>
             জনাব,</p>
-           <p>  কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগের {convertToBengaliNumerals(selectedExamSchedule.sem.exam_system.year)} পর্ব &nbsp;
+           <p >  কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগের {convertToBengaliNumerals(selectedExamSchedule.sem.exam_system.year)} পর্ব &nbsp;
             {convertToBengaliNumerals(selectedExamSchedule.sem.semester)} সেমিস্টার স্নাতক(সম্মান)
              {dateToBengaliNumerals(selectedExamSchedule.exam_year)} ইং সনের
             পরীক্ষার প্রশ্নকর্তা ও পরীক্ষকের তালিকা এতদসংগে সংযুক্ত করে আপনার অবগতি ও প্রয়োজনীয় ব্যবস্থা
             গ্রহণের জন্য প্রেরণ করা হলো।
           </p>
           <p>ধন্যবাদান্তে,</p>
-          <p>আপনার বিশ্বস্ত</p>
-          <p></p>
+          <p>আপনার বিশ্বস্ত,</p>
+          <p>(প্রফেসর ড ঃ আবু সাঈদ  মোঃ মোস্তাফিজুর রহমান)</p>
+          <p>সভাপতি <br />
+
+          ১ম পর্ব ১ম ও ২য় সেমিস্টার স্নাতক(সম্মান) পরীক্ষা কমিটি,২০২৩ <br />
+
+          সিএসই বিভাগ,জাবিঃ
+          </p>
 
 
   </div>

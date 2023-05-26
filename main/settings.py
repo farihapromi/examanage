@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'corsheaders',
      'react_frontend',
     # 'react_frontendrest_framework',
+     'crispy_forms',
     
     'rest_framework',
     'django.contrib.admin',
@@ -46,6 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

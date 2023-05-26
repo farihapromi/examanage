@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import NavBar from "../components/NavBar";
 
 const MyComponent = () => {
   const [committeeMembers, setCommitteeMembers] = useState([]);
@@ -94,6 +95,7 @@ const MyComponent = () => {
 
   return (
     <div>
+   <NavBar/>
       <h1>Create Exam Commitee Member</h1>
       <form onSubmit={handleSubmit}>
       
